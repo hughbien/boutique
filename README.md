@@ -22,7 +22,7 @@ can configure what products you sell here:
       c.db_password   'password'
     end
 
-    Boutique.add('icon-set') do |p|
+    Boutique.product('icon-set') do |p|
       p.file        '/home/hugh/icon-set.tgz'
       p.price       10.5
       p.return_url  'http://zincmade.com/'

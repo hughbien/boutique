@@ -23,6 +23,17 @@ module Boutique
         :database => config.db_database
       )
     end
+
+    def product(id)
+      builder = ProductBuilder.new
+      yield builder
+      products[id] = Product.new(
+        id, builder.file, builder.price, builder.return_url)
+    end
+
+    def products
+      @products ||= {}
+    end
   end
 
   class Config
@@ -49,6 +60,34 @@ module Boutique
     def self.db_database(value=nil)
       @db_database = value if !value.nil?
       @db_database
+    end
+  end
+
+  class ProductBuilder
+    def file(value=nil)
+      @file = value if !value.nil?
+      @file
+    end
+
+    def price(value=nil)
+      @price = value if !value.nil?
+      @price
+    end
+
+    def return_url(value=nil)
+      @return_url = value if !value.nil?
+      @return_url
+    end
+  end
+
+  class Product
+    attr_reader :id, :file, :price, :return_url
+
+    def initialize(id, file, price, return_url)
+      @id = id
+      @file = file
+      @price = price
+      @return_url = return_url
     end
   end
 
