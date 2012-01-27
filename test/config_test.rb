@@ -15,18 +15,4 @@ class ConfigTest < MiniTest::Unit::TestCase
     assert_equal('secret', Boutique.config.db_password)
     assert_equal('db.sqlite3', Boutique.config.db_database)
   end
-
-  def test_add_products
-    Boutique.product('icon-set') do |p|
-      p.file       File.expand_path('../README.md', File.dirname(__FILE__))
-      p.price      10.5
-      p.return_url 'http://zincmade.com'
-    end
-    assert_equal(1, Boutique.products.size)
-
-    set = Boutique.products['icon-set']
-    assert_equal(File.expand_path('../README.md', File.dirname(__FILE__)), set.file)
-    assert_equal(10.5, set.price)
-    assert_equal('http://zincmade.com', set.return_url)
-  end
 end

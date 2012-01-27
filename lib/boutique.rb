@@ -24,15 +24,13 @@ module Boutique
       )
     end
 
-    def product(id)
+    def product(name)
       builder = ProductBuilder.new
+      builder.name(name)
       yield builder
-      products[id] = Product.new(
-        id, builder.file, builder.price, builder.return_url)
-    end
-
-    def products
-      @products ||= {}
+      product = Product.first_or_create({:name => name}, builder.to_hash)
+      product.save
+      product
     end
   end
 
@@ -64,6 +62,11 @@ module Boutique
   end
 
   class ProductBuilder
+    def name(value=nil)
+      @name = value if !value.nil?
+      @name
+    end
+
     def file(value=nil)
       @file = value if !value.nil?
       @file
@@ -78,17 +81,23 @@ module Boutique
       @return_url = value if !value.nil?
       @return_url
     end
+
+    def to_hash
+      {:name => @name,
+       :file => @file,
+       :price => @price,
+       :return_url => return_url}
+    end
   end
 
   class Product
-    attr_reader :id, :file, :price, :return_url
+    include DataMapper::Resource
 
-    def initialize(id, file, price, return_url)
-      @id = id
-      @file = file
-      @price = price
-      @return_url = return_url
-    end
+    property :id, Serial
+    property :name, String
+    property :file, String
+    property :price, Decimal
+    property :return_url, String
   end
 
   class Purchase
