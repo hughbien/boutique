@@ -30,10 +30,16 @@ can configure what products you sell here:
       p.description '50 different icons in three sizes and four colors'
     end
 
-    # start purchase at /boutique/icon-set/
-    # download page at  /boutique/long-random-hex-hash/
-    # actual file at    /download/long-random-hex-hash/icon-set.tgz
     run Boutique::App
+
+With the settings above, a normal flow would look like:
+
+1. On your site, link the user to `/boutique/icon-set/` to purchase
+2. User is redirected to paypal
+3. After completing paypal, user is redirected to 
+   `http://zincmade.com/?f=id-longhash`
+4. On this page, issue an AJAX request to `/boutique/purchases/id-longhash`.
+   The `download` field of the JSON will include the download URL.
 
 Usage
 =====
@@ -43,6 +49,7 @@ the included command line application.
 
     % boutique --list
     % boutique --stats id --after date --before date
+    % boutique --clean
 
 Development
 ===========

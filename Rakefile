@@ -1,9 +1,10 @@
 require File.expand_path('lib/boutique', File.dirname(__FILE__))
+require 'rake/testtask'
 
 task :default => :test
 
-task :test do
-  ruby 'test/*_test.rb'
+Rake::TestTask.new do |t|
+  t.test_files = FileList['test/*_test.rb']
 end
 
 task :build do

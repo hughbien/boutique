@@ -1,8 +1,4 @@
-require 'rubygems'
-require 'minitest/autorun'
-require 'rack'
-require 'rack/test'
-require 'rack/server'
+require File.expand_path('helper', File.dirname(__FILE__))
 
 class BoutiqueTest < MiniTest::Unit::TestCase
   include Rack::Test::Methods
