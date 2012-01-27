@@ -3,6 +3,7 @@ require 'sinatra/base'
 require 'dm-core'
 require 'cgi'
 require 'date'
+require 'digest/sha1'
 
 module Boutique
   VERSION = '0.0.1'
@@ -141,6 +142,7 @@ module Boutique
     property :id, Serial
     property :created_at, DateTime
     property :counter, Integer, :required => true
+    property :secret, String, :required => true
     property :transaction_id, Integer
     property :completed_at, DateTime
 
@@ -148,6 +150,7 @@ module Boutique
 
     def initialize(attr = {})
       attr[:counter] ||= 0
+      attr[:secret] ||= Digest::SHA1.hexdigest("#{DateTime.now}#{rand}")[0..9]
       super
     end
 
@@ -158,6 +161,12 @@ module Boutique
 
     def completed?
       !completed_at.nil? && !transaction_id.nil?
+    end
+
+    def boutique_id
+      (self.id.nil? || self.secret.nil?) ?
+        raise('Cannot get boutique_id for unsaved purchase') :
+        "#{self.id}-#{self.secret}"
     end
   end
 

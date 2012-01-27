@@ -20,6 +20,7 @@ class ModelTest < MiniTest::Unit::TestCase
     assert_equal(0, purchase.counter)
     assert_nil(purchase.transaction_id)
     assert_nil(purchase.completed_at)
+    refute_nil(purchase.secret)
     refute(purchase.completed?)
 
     purchase.complete(1)
@@ -27,6 +28,10 @@ class ModelTest < MiniTest::Unit::TestCase
     assert_equal(1, purchase.transaction_id)
     refute_nil(purchase.completed_at)
     assert(purchase.completed?)
+
+    bid = purchase.boutique_id
+    assert_equal(purchase.id, bid.split('-')[0].to_i)
+    assert_equal(10, bid.split('-')[1].size)
   end
 
   def test_product_create
