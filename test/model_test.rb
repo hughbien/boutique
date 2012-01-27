@@ -2,14 +2,17 @@ require File.expand_path('helper', File.dirname(__FILE__))
 
 class PurchaseTest < MiniTest::Unit::TestCase
   def test_purchase_create
-    count = Boutique::Purchase.count
-    purchase = Boutique::Purchase.create(
-      :product => 'icon-set',
+    product = Boutique::Product.create(
+      :name => 'ebook',
       :file => File.expand_path('../README.md', File.dirname(__FILE__)),
-      :price => 100.05,
+      :price => 10.5,
       :return_url => 'http://zincmade.com')
-    assert_equal(0, purchase.counter)
+    count = Boutique::Purchase.count
+    purchase = Boutique::Purchase.create({})
+    product.purchases << purchase
+    product.save
     assert_equal(count + 1, Boutique::Purchase.count)
+    assert_equal(0, purchase.counter)
   end
 
   def test_product_create
@@ -25,5 +28,6 @@ class PurchaseTest < MiniTest::Unit::TestCase
     assert_equal(File.expand_path('../README.md', File.dirname(__FILE__)), set.file)
     assert_equal(10.5, set.price)
     assert_equal('http://zincmade.com', set.return_url)
+    assert_equal(0, set.purchases.size)
   end
 end

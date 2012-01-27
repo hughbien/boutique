@@ -94,10 +94,12 @@ module Boutique
     include DataMapper::Resource
 
     property :id, Serial
-    property :name, String
-    property :file, String
-    property :price, Decimal
-    property :return_url, String
+    property :name, String, :required => true, :unique => true
+    property :file, String, :required => true
+    property :price, Decimal, :required => true
+    property :return_url, String, :required => true
+
+    has n, :purchases
   end
 
   class Purchase
@@ -105,17 +107,17 @@ module Boutique
 
     property :id, Serial
     property :created_at, DateTime
-    property :product, String
-    property :file, String
-    property :price, Decimal
-    property :return_url, String
-    property :counter, Integer
+    property :counter, Integer, :required => true
+
+    belongs_to :product
 
     def initialize(attr = {})
       attr[:counter] ||= 0
       super
     end
   end
+
+  DataMapper.finalize
 
   class App < Sinatra::Base
     get '/' do
