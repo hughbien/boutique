@@ -6,6 +6,7 @@ class ModelTest < MiniTest::Unit::TestCase
     Boutique::Product.all.destroy
     Boutique::Config.pp_url('http://localhost')
     Boutique::Config.pp_email('paypal_biz@mailinator.com')
+    Boutique::Config.download_dir(File.expand_path('../temp', File.dirname(__FILE__)))
   end
 
   def test_purchase_create
@@ -20,6 +21,7 @@ class ModelTest < MiniTest::Unit::TestCase
     assert_equal(0, purchase.counter)
     assert_nil(purchase.transaction_id)
     assert_nil(purchase.completed_at)
+    assert_nil(purchase.download)
     refute_nil(purchase.secret)
     refute(purchase.completed?)
 
@@ -28,6 +30,7 @@ class ModelTest < MiniTest::Unit::TestCase
     assert_equal('1', purchase.transaction_id)
     refute_nil(purchase.completed_at)
     assert(purchase.completed?)
+    assert_match(%r(/download/[^/]+/README.md), purchase.download)
 
     bid = purchase.boutique_id
     assert_equal(purchase.id, bid.split('-')[0].to_i)

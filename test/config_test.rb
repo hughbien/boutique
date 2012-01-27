@@ -3,14 +3,18 @@ require File.expand_path('helper', File.dirname(__FILE__))
 class ConfigTest < MiniTest::Unit::TestCase
   def test_db
     Boutique.configure do |c|
-      c.db_adapter  'sqlite3'
-      c.db_host     'localhost'
-      c.db_username 'root'
-      c.db_password 'secret'
-      c.db_database 'db.sqlite3'
-      c.pp_email    'paypal_biz@mailinator.com'
-      c.pp_url      'https://www.sandbox.paypal.com/cgi-bin/webscr'
+      c.download_path '/download'
+      c.download_dir  "#{File.dirname(__FILE__)}/download"
+      c.db_adapter    'sqlite3'
+      c.db_host       'localhost'
+      c.db_username   'root'
+      c.db_password   'secret'
+      c.db_database   'db.sqlite3'
+      c.pp_email      'paypal_biz@mailinator.com'
+      c.pp_url        'https://www.sandbox.paypal.com/cgi-bin/webscr'
     end
+    assert_equal('/download', Boutique.config.download_path)
+    assert_equal("#{File.dirname(__FILE__)}/download", Boutique.config.download_dir)
     assert_equal('sqlite3', Boutique.config.db_adapter)
     assert_equal('localhost', Boutique.config.db_host)
     assert_equal('root', Boutique.config.db_username)

@@ -8,6 +8,7 @@ class BoutiqueTest < MiniTest::Unit::TestCase
     Boutique::Purchase.all.destroy
     Boutique::Config.pp_url('http://localhost')
     Boutique::Config.pp_email('paypal_biz@mailinator.com')
+    Boutique::Config.download_dir(File.expand_path('../temp', File.dirname(__FILE__)))
   end
 
   def test_redirect_to_paypal

@@ -38,6 +38,16 @@ module Boutique
   end
 
   class Config
+    def self.download_path(value=nil)
+      @download_path = value if !value.nil?
+      @download_path
+    end
+
+    def self.download_dir(value=nil)
+      @download_dir = value if !value.nil?
+      @download_dir
+    end
+
     def self.db_adapter(value=nil)
       @db_adapter = value if !value.nil?
       @db_adapter
@@ -131,6 +141,7 @@ module Boutique
     property :secret, String, :required => true
     property :transaction_id, String
     property :completed_at, DateTime
+    property :download, String
 
     belongs_to :product
 
@@ -143,6 +154,12 @@ module Boutique
     def complete(txn_id)
       self.transaction_id = txn_id
       self.completed_at = DateTime.now
+
+      linked_file = "/#{Date.today.strftime('%Y%m%d')}-#{boutique_id}/#{File.basename(product.file)}"
+      full_dir = File.dirname("#{Boutique.config.download_dir}#{linked_file}")
+      `mkdir -p #{full_dir}`
+      `ln -s #{product.file} #{Boutique.config.download_dir}#{linked_file}`
+      self.download = "#{Boutique.config.download_path}#{linked_file}"
     end
 
     def completed?
