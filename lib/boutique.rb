@@ -151,8 +151,11 @@ module Boutique
   DataMapper.finalize
 
   class App < Sinatra::Base
-    get '/' do
-      'test'
+    get '/:code' do
+      product = Boutique::Product.first(:code => params[:code])
+      product.nil? ?
+        halt(404, "product #{params[:code]} not found") :
+        redirect(product.paypal_url)
     end
   end
 end
