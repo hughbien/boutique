@@ -22,12 +22,10 @@ can configure what products you sell here:
       c.db_password   'password'
     end
 
-    Boutique.add('Icon Set') do |p|
-      p.id          'icon-set'
+    Boutique.add('icon-set') do |p|
       p.file        '/home/hugh/icon-set.tgz'
       p.price       10.5
       p.return_url  'http://zincmade.com/'
-      p.description '50 different icons in three sizes and four colors'
     end
 
     run Boutique::App
@@ -48,7 +46,7 @@ The web application is for customers, to get information about your products use
 the included command line application.
 
     % boutique --list
-    % boutique --stats id --after date --before date
+    % boutique --stats key --after date --before date
     % boutique --clean
 
 Development

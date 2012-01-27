@@ -57,6 +57,16 @@ module Boutique
 
     property :id, Serial
     property :created_at, DateTime
+    property :product, String
+    property :file, String
+    property :price, Decimal
+    property :return_url, String
+    property :counter, Integer
+
+    def initialize(attr = {})
+      attr[:counter] ||= 0
+      super
+    end
   end
 
   class App < Sinatra::Base
