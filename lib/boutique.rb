@@ -59,6 +59,16 @@ module Boutique
       @db_database = value if !value.nil?
       @db_database
     end
+
+    def self.pp_email(value=nil)
+      @pp_email = value if !value.nil?
+      @pp_email
+    end
+
+    def self.pp_url(value=nil)
+      @pp_url = value if !value.nil?
+      @pp_url
+    end
   end
 
   class ProductBuilder
@@ -100,6 +110,17 @@ module Boutique
     property :return_url, String, :required => true
 
     has n, :purchases
+
+    def paypal_url
+      values = {
+        :business => Boutique.config.pp_email,
+        :cmd => '_xclick',
+        :item_name => name,
+        :item_number => 'product-identifier',
+        :amount => price,
+        :currency_code => 'USD'
+      }
+    end
   end
 
   class Purchase

@@ -1,6 +1,11 @@
 require File.expand_path('helper', File.dirname(__FILE__))
 
 class PurchaseTest < MiniTest::Unit::TestCase
+  def setup
+    Boutique::Purchase.all.destroy
+    Boutique::Product.all.destroy
+  end
+
   def test_purchase_create
     product = Boutique::Product.create(
       :name => 'ebook',
