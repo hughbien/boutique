@@ -15,8 +15,18 @@ class ModelTest < MiniTest::Unit::TestCase
     purchase = Boutique::Purchase.create({})
     product.purchases << purchase
     product.save
+
     assert_equal(count + 1, Boutique::Purchase.count)
     assert_equal(0, purchase.counter)
+    assert_nil(purchase.transaction_id)
+    assert_nil(purchase.completed_at)
+    refute(purchase.completed?)
+
+    purchase.complete(1)
+    purchase.save
+    assert_equal(1, purchase.transaction_id)
+    refute_nil(purchase.completed_at)
+    assert(purchase.completed?)
   end
 
   def test_product_create

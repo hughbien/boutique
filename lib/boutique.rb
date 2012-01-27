@@ -2,6 +2,7 @@ require 'rubygems'
 require 'sinatra/base'
 require 'dm-core'
 require 'cgi'
+require 'date'
 
 module Boutique
   VERSION = '0.0.1'
@@ -139,12 +140,23 @@ module Boutique
     property :id, Serial
     property :created_at, DateTime
     property :counter, Integer, :required => true
+    property :transaction_id, Integer
+    property :completed_at, DateTime
 
     belongs_to :product
 
     def initialize(attr = {})
       attr[:counter] ||= 0
       super
+    end
+
+    def complete(txn_id)
+      self.transaction_id = txn_id
+      self.completed_at = DateTime.now
+    end
+
+    def completed?
+      !completed_at.nil? && !transaction_id.nil?
     end
   end
 
