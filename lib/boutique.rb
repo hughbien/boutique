@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'sinatra/base'
 require 'dm-core'
+require 'cgi'
 
 module Boutique
   VERSION = '0.0.1'
@@ -127,6 +128,8 @@ module Boutique
         :amount => price,
         :currency_code => 'USD'
       }
+      query = values.map { |kv| "#{CGI.escape(kv[0].to_s)}=#{CGI.escape(kv[1].to_s)}" }.join('&')
+      "#{Boutique.config.pp_url}?#{query}"
     end
   end
 

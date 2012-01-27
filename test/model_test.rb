@@ -1,18 +1,16 @@
 require File.expand_path('helper', File.dirname(__FILE__))
 
-class PurchaseTest < MiniTest::Unit::TestCase
+class ModelTest < MiniTest::Unit::TestCase
   def setup
     Boutique::Purchase.all.destroy
     Boutique::Product.all.destroy
+    Boutique::Config.pp_url('http://localhost')
+    Boutique::Config.pp_email('paypal_biz@mailinator.com')
   end
 
   def test_purchase_create
-    product = Boutique::Product.create(
-      :code => 'ebook',
-      :name => 'Ebook',
-      :file => File.expand_path('../README.md', File.dirname(__FILE__)),
-      :price => 10.5,
-      :return_url => 'http://zincmade.com')
+    product = ebook_product
+    product.save
     count = Boutique::Purchase.count
     purchase = Boutique::Purchase.create({})
     product.purchases << purchase
@@ -37,5 +35,22 @@ class PurchaseTest < MiniTest::Unit::TestCase
     assert_equal(10.5, set.price)
     assert_equal('http://zincmade.com', set.return_url)
     assert_equal(0, set.purchases.size)
+  end
+
+  def test_paypal_url
+    assert_equal(
+      'http://localhost?business=paypal_biz%40mailinator.com&cmd=_xclick&item_name=Ebook&item_number=ebook&amount=0.105E2&currency_code=USD',
+      ebook_product.paypal_url
+    )
+  end
+
+  private
+  def ebook_product
+    Boutique::Product.new(
+      :code => 'ebook',
+      :name => 'Ebook',
+      :file => File.expand_path('../README.md', File.dirname(__FILE__)),
+      :price => 10.5,
+      :return_url => 'http://zincmade.com')
   end
 end
