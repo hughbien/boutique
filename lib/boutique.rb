@@ -24,11 +24,11 @@ module Boutique
       )
     end
 
-    def product(name)
+    def product(code)
       builder = ProductBuilder.new
-      builder.name(name)
+      builder.code(code)
       yield builder
-      product = Product.first_or_create({:name => name}, builder.to_hash)
+      product = Product.first_or_create({:code => code}, builder.to_hash)
       product.save
       product
     end
@@ -72,6 +72,11 @@ module Boutique
   end
 
   class ProductBuilder
+    def code(value=nil)
+      @code = value if !value.nil?
+      @code
+    end
+
     def name(value=nil)
       @name = value if !value.nil?
       @name
@@ -93,10 +98,11 @@ module Boutique
     end
 
     def to_hash
-      {:name => @name,
+      {:code => @code,
+       :name => @name,
        :file => @file,
        :price => @price,
-       :return_url => return_url}
+       :return_url => @return_url}
     end
   end
 
@@ -104,6 +110,7 @@ module Boutique
     include DataMapper::Resource
 
     property :id, Serial
+    property :code, String, :required => true, :unique => true
     property :name, String, :required => true, :unique => true
     property :file, String, :required => true
     property :price, Decimal, :required => true
@@ -116,7 +123,7 @@ module Boutique
         :business => Boutique.config.pp_email,
         :cmd => '_xclick',
         :item_name => name,
-        :item_number => 'product-identifier',
+        :item_number => code,
         :amount => price,
         :currency_code => 'USD'
       }
