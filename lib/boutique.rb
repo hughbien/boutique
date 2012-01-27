@@ -120,20 +120,6 @@ module Boutique
     property :return_url, String, :required => true
 
     has n, :purchases
-
-    def paypal_url(notify_url)
-      values = {
-        :business => Boutique.config.pp_email,
-        :cmd => '_xclick',
-        :item_name => name,
-        :item_number => code,
-        :amount => price,
-        :currency_code => 'USD',
-        :notify_url => notify_url
-      }
-      query = values.map { |kv| "#{CGI.escape(kv[0].to_s)}=#{CGI.escape(kv[1].to_s)}" }.join('&')
-      "#{Boutique.config.pp_url}?#{query}"
-    end
   end
 
   class Purchase
@@ -168,6 +154,21 @@ module Boutique
         raise('Cannot get boutique_id for unsaved purchase') :
         "#{self.id}-#{self.secret}"
     end
+
+    def paypal_url(notify_url)
+      values = {
+        :business => Boutique.config.pp_email,
+        :cmd => '_xclick',
+        :item_name => product.name,
+        :item_number => product.code,
+        :amount => product.price,
+        :currency_code => 'USD',
+        :notify_url => "#{notify_url}?b=#{boutique_id}",
+        :return => "#{product.return_url}?b=#{boutique_id}"
+      }
+      query = values.map { |kv| "#{CGI.escape(kv[0].to_s)}=#{CGI.escape(kv[1].to_s)}" }.join('&')
+      "#{Boutique.config.pp_url}?#{query}"
+    end
   end
 
   DataMapper.finalize
@@ -175,9 +176,13 @@ module Boutique
   class App < Sinatra::Base
     get '/:code' do
       product = Boutique::Product.first(:code => params[:code])
-      product.nil? ?
-        halt(404, "product #{params[:code]} not found") :
-        redirect(product.paypal_url("http://#{request.host}/notify"))
+      if product.nil?
+        halt(404, "product #{params[:code]} not found")
+      end
+      purchase = Boutique::Purchase.new
+      product.purchases << purchase
+      product.save
+      redirect(purchase.paypal_url("http://#{request.host}/notify"))
     end
   end
 end

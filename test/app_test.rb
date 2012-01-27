@@ -5,6 +5,7 @@ class BoutiqueTest < MiniTest::Unit::TestCase
 
   def setup
     Boutique::Product.all.destroy
+    Boutique::Purchase.all.destroy
     Boutique::Config.pp_url('http://localhost')
     Boutique::Config.pp_email('paypal_biz@mailinator.com')
   end
@@ -12,9 +13,13 @@ class BoutiqueTest < MiniTest::Unit::TestCase
   def test_redirect_to_paypal
     ebook_product.save
     get '/ebook'
+
+    purchase = Boutique::Purchase.first
+    refute(purchase.nil?)
+
     assert(last_response.redirect?)
     assert(
-      ebook_product.paypal_url('http://localhost/notify'),
+      purchase.paypal_url('http://localhost/notify'),
       last_response.headers['Location'])
   end
 

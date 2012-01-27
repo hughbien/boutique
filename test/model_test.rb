@@ -32,6 +32,11 @@ class ModelTest < MiniTest::Unit::TestCase
     bid = purchase.boutique_id
     assert_equal(purchase.id, bid.split('-')[0].to_i)
     assert_equal(10, bid.split('-')[1].size)
+
+    assert_match(
+      'http://localhost?business=paypal_biz%40mailinator.com&cmd=_xclick&item_name=Ebook&item_number=ebook&amount=0.105E2&currency_code=USD&notify_url=http%3A%2F%2Flocalhost%2Fnotify',
+      purchase.paypal_url('http://localhost/notify')
+    )
   end
 
   def test_product_create
@@ -50,13 +55,6 @@ class ModelTest < MiniTest::Unit::TestCase
     assert_equal(10.5, set.price)
     assert_equal('http://zincmade.com', set.return_url)
     assert_equal(0, set.purchases.size)
-  end
-
-  def test_paypal_url
-    assert_equal(
-      'http://localhost?business=paypal_biz%40mailinator.com&cmd=_xclick&item_name=Ebook&item_number=ebook&amount=0.105E2&currency_code=USD&notify_url=http%3A%2F%2Flocalhost%2Fnotify',
-      ebook_product.paypal_url('http://localhost/notify')
-    )
   end
 
   private
