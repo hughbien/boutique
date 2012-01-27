@@ -129,7 +129,7 @@ module Boutique
     property :created_at, DateTime
     property :counter, Integer, :required => true
     property :secret, String, :required => true
-    property :transaction_id, Integer
+    property :transaction_id, String
     property :completed_at, DateTime
 
     belongs_to :product
@@ -163,7 +163,7 @@ module Boutique
         :item_number => product.code,
         :amount => product.price,
         :currency_code => 'USD',
-        :notify_url => "#{notify_url}?b=#{boutique_id}",
+        :notify_url => "#{notify_url}/b=#{boutique_id}",
         :return => "#{product.return_url}?b=#{boutique_id}"
       }
       query = values.map { |kv| "#{CGI.escape(kv[0].to_s)}=#{CGI.escape(kv[1].to_s)}" }.join('&')
@@ -174,7 +174,7 @@ module Boutique
   DataMapper.finalize
 
   class App < Sinatra::Base
-    get '/:code' do
+    get '/buy/:code' do
       product = Boutique::Product.first(:code => params[:code])
       if product.nil?
         halt(404, "product #{params[:code]} not found")
@@ -183,6 +183,19 @@ module Boutique
       product.purchases << purchase
       product.save
       redirect(purchase.paypal_url("http://#{request.host}/notify"))
+    end
+
+    get '/notify/:boutique_id' do
+      id, secret = params[:boutique_id].split('-')
+      purchase = Boutique::Purchase.get(id)
+      if purchase.nil? || purchase.secret != secret
+        halt(404, "purchase #{params[:boutique_id]} not found")
+      end
+      if params['txn_id'] && params['payment_status']
+        purchase.complete(params[:txn_id])
+        purchase.save
+      end
+      ''
     end
   end
 end

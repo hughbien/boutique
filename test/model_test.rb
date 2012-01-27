@@ -23,9 +23,9 @@ class ModelTest < MiniTest::Unit::TestCase
     refute_nil(purchase.secret)
     refute(purchase.completed?)
 
-    purchase.complete(1)
+    purchase.complete('1')
     purchase.save
-    assert_equal(1, purchase.transaction_id)
+    assert_equal('1', purchase.transaction_id)
     refute_nil(purchase.completed_at)
     assert(purchase.completed?)
 

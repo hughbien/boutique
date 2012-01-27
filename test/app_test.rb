@@ -12,7 +12,7 @@ class BoutiqueTest < MiniTest::Unit::TestCase
 
   def test_redirect_to_paypal
     ebook_product.save
-    get '/ebook'
+    get '/buy/ebook'
 
     purchase = Boutique::Purchase.first
     refute(purchase.nil?)
@@ -24,7 +24,27 @@ class BoutiqueTest < MiniTest::Unit::TestCase
   end
 
   def test_purchase_non_existing_product
-    get '/non-existing-product'
+    get '/buy/non-existing-product'
+    assert(last_response.not_found?)
+  end
+
+  def test_notify
+    product = ebook_product
+    purchase = Boutique::Purchase.new
+    product.purchases << purchase
+    product.save
+    refute(purchase.completed?)
+
+    get "/notify/#{purchase.boutique_id}?payment_status=Completed&txn_id=1337"
+    assert(last_response.ok?)
+
+    purchase.reload
+    assert(purchase.completed?)
+    assert_equal('1337', purchase.transaction_id)
+  end
+
+  def test_notify_not_found
+    get "/notify/99-notfound"
     assert(last_response.not_found?)
   end
 
