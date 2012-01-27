@@ -49,8 +49,8 @@ class ModelTest < MiniTest::Unit::TestCase
 
   def test_paypal_url
     assert_equal(
-      'http://localhost?business=paypal_biz%40mailinator.com&cmd=_xclick&item_name=Ebook&item_number=ebook&amount=0.105E2&currency_code=USD',
-      ebook_product.paypal_url
+      'http://localhost?business=paypal_biz%40mailinator.com&cmd=_xclick&item_name=Ebook&item_number=ebook&amount=0.105E2&currency_code=USD&notify_url=http%3A%2F%2Flocalhost%2Fnotify',
+      ebook_product.paypal_url('http://localhost/notify')
     )
   end
 

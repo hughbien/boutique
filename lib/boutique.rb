@@ -120,14 +120,15 @@ module Boutique
 
     has n, :purchases
 
-    def paypal_url
+    def paypal_url(notify_url)
       values = {
         :business => Boutique.config.pp_email,
         :cmd => '_xclick',
         :item_name => name,
         :item_number => code,
         :amount => price,
-        :currency_code => 'USD'
+        :currency_code => 'USD',
+        :notify_url => notify_url
       }
       query = values.map { |kv| "#{CGI.escape(kv[0].to_s)}=#{CGI.escape(kv[1].to_s)}" }.join('&')
       "#{Boutique.config.pp_url}?#{query}"
@@ -167,7 +168,7 @@ module Boutique
       product = Boutique::Product.first(:code => params[:code])
       product.nil? ?
         halt(404, "product #{params[:code]} not found") :
-        redirect(product.paypal_url)
+        redirect(product.paypal_url("http://#{request.host}/notify"))
     end
   end
 end

@@ -13,7 +13,9 @@ class BoutiqueTest < MiniTest::Unit::TestCase
     ebook_product.save
     get '/ebook'
     assert(last_response.redirect?)
-    assert(ebook_product.paypal_url, last_response.headers['Location'])
+    assert(
+      ebook_product.paypal_url('http://localhost/notify'),
+      last_response.headers['Location'])
   end
 
   def test_purchase_non_existing_product
