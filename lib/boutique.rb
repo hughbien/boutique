@@ -12,22 +12,19 @@ module Boutique
   VERSION = '0.0.1'
 
   class << self
-    def configure
+    def configure(setup_db=true)
       yield Config
-    end
-
-    def config
-      Config
-    end
-
-    def init
       DataMapper.setup(:default,
         :adapter  => config.db_adapter,
         :host     => config.db_host,
         :username => config.db_username,
         :password => config.db_password,
         :database => config.db_database
-      )
+      ) if setup_db
+    end
+
+    def config
+      Config
     end
 
     def product(code)

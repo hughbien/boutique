@@ -13,7 +13,7 @@ class BoutiqueTest < MiniTest::Unit::TestCase
   def setup
     Boutique::Purchase.all.destroy
     Boutique::Product.all.destroy
-    Boutique.configure do |c|
+    Boutique.configure(false) do |c|
       c.pem_private   File.expand_path('../certs/private.pem', File.dirname(__FILE__))
       c.pem_public    File.expand_path('../certs/public.pem', File.dirname(__FILE__))
       c.pem_paypal    File.expand_path('../certs/paypal.pem', File.dirname(__FILE__))
