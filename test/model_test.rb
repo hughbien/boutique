@@ -17,7 +17,7 @@ class ModelTest < BoutiqueTest
     refute_nil(purchase.secret)
     refute(purchase.completed?)
 
-    purchase.complete('1')
+    purchase.complete('1', 'john@mailinator.com', 'John')
     purchase.save
     assert_equal('1', purchase.transaction_id)
     refute_nil(purchase.completed_at)

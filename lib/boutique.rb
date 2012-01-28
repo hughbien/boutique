@@ -158,6 +158,8 @@ module Boutique
     property :counter, Integer, :required => true
     property :secret, String, :required => true
     property :transaction_id, String
+    property :email, String
+    property :name, String
     property :completed_at, DateTime
     property :downloads, CommaSeparatedList
 
@@ -169,8 +171,10 @@ module Boutique
       super
     end
 
-    def complete(txn_id)
+    def complete(txn_id, email, name)
       self.transaction_id = txn_id
+      self.email = email
+      self.name = name
       self.completed_at = DateTime.now
       link_download!
     end
@@ -267,7 +271,7 @@ module Boutique
          params['txn_id'] &&
          params['payment_status'] &&
          params['receiver_email'] == Boutique.config.pp_email
-        purchase.complete(params[:txn_id])
+        purchase.complete(params['txn_id'], params['payer_email'], params['first_name'])
         purchase.save
       end
       ''
