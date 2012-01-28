@@ -4,12 +4,46 @@ require File.expand_path('lib/boutique', File.dirname(__FILE__))
 require 'dm-migrations'
 
 ENV['BOUTIQUE_CMD'] = '1'
-load(ENV['BOUTIQUE_CONFIG'] || 'config.ru')
 
 module Boutique
   class Command
     def self.migrate
+      load_config rescue DataObjects::SyntaxError
       DataMapper.auto_upgrade!
+    end
+
+    def self.stats(code)
+      load_config
+      product = Boutique::Product.first(:code => code)
+      if product.nil?
+        puts "Product #{code} not found"
+        return
+      end
+
+      puts "Code:   #{product.code}"
+      puts "Name:   #{product.name}"
+      puts "Files:  #{product.files.join("\n        ")}"
+      printf("Price:  $%.2f\n" % product.price)
+      puts "Return: #{product.return_url}"
+
+      puts ('-' * 40)
+
+      purchases = product.purchases
+      puts "* #{purchases.size} purchases have been initiated"
+      puts "* #{purchases.select {|p| p.completed?}.size} purchases have been completed"
+      puts "* #{purchases.reduce(0) {|sum,p| sum + p.counter}} downloads have occurred"
+
+      puts ('-' * 40)
+
+      puts "id, downloads, email" if purchases.size > 0
+      purchases.sort_by {|p| p.counter }.reverse.each do |purchase|
+        puts "* #{purchase.id}, #{purchase.counter}, #{purchase.email}" if purchase.completed?
+      end
+    end
+
+    private
+    def self.load_config
+      load(ENV['BOUTIQUE_CONFIG'] || 'config.ru')
     end
   end
 end
@@ -18,6 +52,7 @@ ARGV.options do |o|
   o.set_summary_indent('  ')
   o.banner =    "Usage: #{File.basename($0)} [OPTION]"
   o.define_head "Admin for boutique"
+  o.on('-s', '--stats product', String, 'show stats on product') { |p| Boutique::Command.stats(p); exit }
   o.on('-m', '--migrate', 'initial migration') { Boutique::Command.migrate; exit }
   o.on('-h', '--help', 'show this help message') { puts o; exit }
   o.parse!
