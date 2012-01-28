@@ -80,7 +80,6 @@ via `rake`.
 TODO
 ====
 
-* record names/emails of purchases from paypal
 * handle download expiration
 * boutique command line
 * initial migration support

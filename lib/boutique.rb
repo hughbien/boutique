@@ -167,7 +167,7 @@ module Boutique
 
     def initialize(attr = {})
       attr[:counter] ||= 0
-      attr[:secret] ||= Digest::SHA1.hexdigest("#{DateTime.now}#{rand}")[0..9]
+      attr[:secret] ||= random_hash
       super
     end
 
@@ -176,17 +176,26 @@ module Boutique
       self.email = email
       self.name = name
       self.completed_at = DateTime.now
-      link_download!
+      link_downloads!
     end
 
     def completed?
       !completed_at.nil? && !transaction_id.nil?
     end
 
-    def link_download!
+    def maybe_refresh_downloads!
+      if self.completed? &&
+         (self.downloads.nil? ||
+          self.downloads.any? {|d| !File.exist?(d) })
+        self.link_downloads!
+        self.save
+      end
+    end
+
+    def link_downloads!
       return if !completed?
       self.downloads = product.files.map do |file|
-        linked_file = "/#{Date.today.strftime('%Y%m%d')}-#{boutique_id}/#{File.basename(file)}"
+        linked_file = "/#{Date.today.strftime('%Y%m%d')}-#{random_hash}/#{File.basename(file)}"
         full_dir = File.dirname("#{Boutique.config.download_dir}#{linked_file}")
         `mkdir -p #{full_dir}`
         `ln -s #{file} #{Boutique.config.download_dir}#{linked_file}`
@@ -199,6 +208,10 @@ module Boutique
       (self.id.nil? || self.secret.nil?) ?
         raise('Cannot get boutique_id for unsaved purchase') :
         "#{self.id}-#{self.secret}"
+    end
+
+    def random_hash
+      Digest::SHA1.hexdigest("#{DateTime.now}#{rand}")[0..9]
     end
 
     def to_json
@@ -278,10 +291,11 @@ module Boutique
     end
 
     get '/boutique/record/:boutique_id' do
-      json = get_purchase(params[:boutique_id]).to_json
+      purchase = get_purchase(params[:boutique_id])
+      purchase.maybe_refresh_downloads!
       params['jsonp'].nil? ?
-        json :
-        "#{params['jsonp']}(#{json})"
+        purchase.to_json :
+        "#{params['jsonp']}(#{purchase.to_json})"
     end
 
     def get_purchase(boutique_id)

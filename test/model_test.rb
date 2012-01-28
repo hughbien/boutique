@@ -24,6 +24,11 @@ class ModelTest < BoutiqueTest
     assert(purchase.completed?)
     assert_match(%r(/download/[^/]+/README.md), purchase.downloads[0])
 
+    old_download = purchase.downloads[0]
+    `rm #{Boutique.config.download_dir}#{old_download.sub(Boutique.config.download_path, '')}`
+    purchase.maybe_refresh_downloads!
+    refute_equal(old_download, purchase.downloads[0])
+
     bid = purchase.boutique_id
     assert_equal(purchase.id, bid.split('-')[0].to_i)
     assert_equal(10, bid.split('-')[1].size)
@@ -35,7 +40,7 @@ class ModelTest < BoutiqueTest
 
     json = JSON.parse(purchase.to_json)
     assert_equal(purchase.id, json['id'])
-    assert_equal(1, json['counter'])
+    assert_equal(2, json['counter'])
     assert(json['completed'])
     assert_equal('Ebook', json['name'])
     assert_equal('ebook', json['code'])
