@@ -59,10 +59,10 @@ run them all via `rake`.
 TODO
 ====
 
-[ ] boutique command line
-[ ] initial migration support
-[ ] email customer
-[ ] email exceptions to developer
+* boutique command line
+* initial migration support
+* email customer
+* email exceptions to developer
 
 License
 =======

@@ -5,7 +5,7 @@ class AppTest < BoutiqueTest
 
   def test_redirect_to_paypal
     ebook_product.save
-    get '/buy/ebook'
+    get '/boutique/buy/ebook'
 
     purchase = Boutique::Purchase.first
     refute(purchase.nil?)
@@ -13,7 +13,7 @@ class AppTest < BoutiqueTest
   end
 
   def test_purchase_non_existing_product
-    get '/buy/non-existing-product'
+    get '/boutique/buy/non-existing-product'
     assert(last_response.not_found?)
   end
 
@@ -24,7 +24,7 @@ class AppTest < BoutiqueTest
     product.save
     refute(purchase.completed?)
 
-    get "/notify/#{purchase.boutique_id}?payment_status=Completed&txn_id=1337&receiver_email=#{Boutique.config.pp_email}"
+    get "/boutique/notify/#{purchase.boutique_id}?payment_status=Completed&txn_id=1337&receiver_email=#{Boutique.config.pp_email}"
     assert(last_response.ok?)
 
     purchase.reload
@@ -33,7 +33,7 @@ class AppTest < BoutiqueTest
   end
 
   def test_notify_not_found
-    get "/notify/99-notfound"
+    get "/boutique/notify/99-notfound"
     assert(last_response.not_found?)
   end
 
@@ -43,7 +43,7 @@ class AppTest < BoutiqueTest
     product.purchases << purchase
     product.save
 
-    get "/record/#{purchase.boutique_id}"
+    get "/boutique/record/#{purchase.boutique_id}"
     assert(last_response.ok?)
 
     json = JSON.parse(last_response.body)
@@ -55,7 +55,7 @@ class AppTest < BoutiqueTest
   end
 
   def test_record_not_found
-    get "/record/99-notfound"
+    get "/boutique/record/99-notfound"
     assert(last_response.not_found?)
   end
 

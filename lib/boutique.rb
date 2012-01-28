@@ -243,7 +243,7 @@ module Boutique
   DataMapper.finalize
 
   class App < Sinatra::Base
-    get '/buy/:code' do
+    get '/boutique/buy/:code' do
       product = Boutique::Product.first(:code => params[:code])
       if product.nil?
         halt(404, "product #{params[:code]} not found")
@@ -261,7 +261,7 @@ module Boutique
       "</form><script>document.paypal.submit();</script></body></html>"
     end
 
-    get '/notify/:boutique_id' do
+    get '/boutique/notify/:boutique_id' do
       purchase = get_purchase(params[:boutique_id])
       if params['txn_id'] &&
          params['payment_status'] &&
@@ -272,7 +272,7 @@ module Boutique
       ''
     end
 
-    get '/record/:boutique_id' do
+    get '/boutique/record/:boutique_id' do
       get_purchase(params[:boutique_id]).to_json
     end
 
