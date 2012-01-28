@@ -5,7 +5,7 @@ class AppTest < BoutiqueTest
 
   def test_redirect_to_paypal
     ebook_product.save
-    get '/boutique/buy/ebook'
+    post '/boutique/buy/ebook'
 
     purchase = Boutique::Purchase.first
     refute(purchase.nil?)
@@ -13,7 +13,7 @@ class AppTest < BoutiqueTest
   end
 
   def test_purchase_non_existing_product
-    get '/boutique/buy/non-existing-product'
+    post '/boutique/buy/non-existing-product'
     assert(last_response.not_found?)
   end
 
@@ -24,7 +24,7 @@ class AppTest < BoutiqueTest
     product.save
     refute(purchase.completed?)
 
-    get "/boutique/notify/#{purchase.boutique_id}?payment_status=Completed&txn_id=1337&receiver_email=#{Boutique.config.pp_email}"
+    post "/boutique/notify/#{purchase.boutique_id}?payment_status=Completed&txn_id=1337&receiver_email=#{Boutique.config.pp_email}"
     assert(last_response.ok?)
 
     purchase.reload
@@ -33,7 +33,7 @@ class AppTest < BoutiqueTest
   end
 
   def test_notify_not_found
-    get "/boutique/notify/99-notfound"
+    post "/boutique/notify/99-notfound"
     assert(last_response.not_found?)
   end
 
