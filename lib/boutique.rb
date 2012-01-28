@@ -221,16 +221,25 @@ module Boutique
     end
 
     get '/notify/:boutique_id' do
-      id, secret = params[:boutique_id].split('-')
-      purchase = Boutique::Purchase.get(id)
-      if purchase.nil? || purchase.secret != secret
-        halt(404, "purchase #{params[:boutique_id]} not found")
-      end
+      purchase = get_purchase(params[:boutique_id])
       if params['txn_id'] && params['payment_status']
         purchase.complete(params[:txn_id])
         purchase.save
       end
       ''
+    end
+
+    get '/record/:boutique_id' do
+      get_purchase(params[:boutique_id]).to_json
+    end
+
+    def get_purchase(boutique_id)
+      id, secret = boutique_id.split('-')
+      purchase = Boutique::Purchase.get(id)
+      if purchase.nil? || purchase.secret != secret
+        halt(404, "purchase #{params[:boutique_id]} not found")
+      end
+      purchase
     end
   end
 end

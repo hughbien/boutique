@@ -49,6 +49,28 @@ class BoutiqueTest < MiniTest::Unit::TestCase
     assert(last_response.not_found?)
   end
 
+  def test_record
+    product = ebook_product
+    purchase = Boutique::Purchase.new
+    product.purchases << purchase
+    product.save
+
+    get "/record/#{purchase.boutique_id}"
+    assert(last_response.ok?)
+
+    json = JSON.parse(last_response.body)
+    assert(json['id'])
+    assert_equal('ebook', json['code'])
+    assert_equal('Ebook', json['name'])
+    assert_equal(0, json['counter'])
+    refute(json['completed'])
+  end
+
+  def test_record_not_found
+    get "/record/99-notfound"
+    assert(last_response.not_found?)
+  end
+
   private
   def app
     @app ||= Rack::Server.new.app
