@@ -40,6 +40,21 @@ module Boutique
   end
 
   class Config
+    def self.pem_private(value=nil)
+      @pem_private = value if !value.nil?
+      @pem_private
+    end
+
+    def self.pem_public(value=nil)
+      @pem_public = value if !value.nil?
+      @pem_public
+    end
+
+    def self.pem_paypal(value=nil)
+      @pem_paypal = value if !value.nil?
+      @pem_paypal
+    end
+
     def self.download_path(value=nil)
       @download_path = value if !value.nil?
       @download_path

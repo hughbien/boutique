@@ -14,6 +14,9 @@ class BoutiqueTest < MiniTest::Unit::TestCase
     Boutique::Purchase.all.destroy
     Boutique::Product.all.destroy
     Boutique.configure do |c|
+      c.pem_private   File.expand_path('../cert/private.pem', File.dirname(__FILE__))
+      c.pem_public    File.expand_path('../cert/public.pem', File.dirname(__FILE__))
+      c.pem_paypal    File.expand_path('../cert/paypal.pem', File.dirname(__FILE__))
       c.download_path '/download'
       c.download_dir  File.expand_path('../temp', File.dirname(__FILE__))
       c.db_adapter    'sqlite3'
