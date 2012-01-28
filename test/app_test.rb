@@ -1,15 +1,7 @@
 require File.expand_path('helper', File.dirname(__FILE__))
 
-class BoutiqueTest < MiniTest::Unit::TestCase
+class AppTest < BoutiqueTest
   include Rack::Test::Methods
-
-  def setup
-    Boutique::Product.all.destroy
-    Boutique::Purchase.all.destroy
-    Boutique::Config.pp_url('http://localhost')
-    Boutique::Config.pp_email('paypal_biz@mailinator.com')
-    Boutique::Config.download_dir(File.expand_path('../temp', File.dirname(__FILE__)))
-  end
 
   def test_redirect_to_paypal
     ebook_product.save
@@ -74,14 +66,5 @@ class BoutiqueTest < MiniTest::Unit::TestCase
   private
   def app
     @app ||= Rack::Server.new.app
-  end
-
-  def ebook_product
-    Boutique::Product.new(
-      :code => 'ebook',
-      :name => 'Ebook',
-      :files => [File.expand_path('../README.md', File.dirname(__FILE__))],
-      :price => 10.5,
-      :return_url => 'http://zincmade.com')
   end
 end

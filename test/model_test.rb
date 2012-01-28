@@ -1,14 +1,6 @@
 require File.expand_path('helper', File.dirname(__FILE__))
 
-class ModelTest < MiniTest::Unit::TestCase
-  def setup
-    Boutique::Purchase.all.destroy
-    Boutique::Product.all.destroy
-    Boutique::Config.pp_url('http://localhost')
-    Boutique::Config.pp_email('paypal_biz@mailinator.com')
-    Boutique::Config.download_dir(File.expand_path('../temp', File.dirname(__FILE__)))
-  end
-
+class ModelTest < BoutiqueTest
   def test_purchase_create
     product = ebook_product
     product.save
@@ -66,15 +58,5 @@ class ModelTest < MiniTest::Unit::TestCase
     assert_equal(10.5, set.price)
     assert_equal('http://zincmade.com', set.return_url)
     assert_equal(0, set.purchases.size)
-  end
-
-  private
-  def ebook_product
-    Boutique::Product.new(
-      :code => 'ebook',
-      :name => 'Ebook',
-      :files => [File.expand_path('../README.md', File.dirname(__FILE__))],
-      :price => 10.5,
-      :return_url => 'http://zincmade.com')
   end
 end
