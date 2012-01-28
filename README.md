@@ -8,6 +8,15 @@ Installation
 
     % gem install boutique
 
+You'll need some private/public certificates:
+
+    % openssl genrsa -out private.pem 1024
+    % openssl req -new -key private.pem -x509 -days 365 -out public.pem
+
+You can download PayPal's public certificate under `My Account > Encrypted
+Payment Settings`.  Click the download button for PayPal Public Certificate.
+Rename this certificate to something like `paypal.pem`.
+
 Setup a `config.ru` file and run it like any other Sinatra application.  You
 can configure what products you sell here:
 
@@ -15,29 +24,41 @@ can configure what products you sell here:
     require 'boutique'
 
     Boutique.configure do |c|
-      c.store_path    'boutique'
-      c.download_path 'download'
-      c.paypal_key    'paypalapikey'
-      c.db_username   'username'
-      c.db_password   'password'
+      c.pem_private    '/path/to/private.pem'
+      c.pem_public     '/path/to/public.pem'
+      c.pem_paypal     '/path/to/paypal.pem'
+      c.download_dir   '/path/to/download'
+      c.download_path  '/download'
+      c.db_adapter     'mysql'
+      c.db_host        'localhost'
+      c.db_username    'root'
+      c.db_password    'secret'
+      c.db_database    'boutique'
+      c.pp_email       'paypal_biz@mailinator.com'
+      c.pp_url         'http://https://www.sandbox.paypal.com/cgi-bin/webscr'
     end
 
     Boutique.product('icon-set') do |p|
-      p.file        '/home/hugh/icon-set.tgz'
-      p.price       10.5
-      p.return_url  'http://zincmade.com/'
+      p.name       'Icon Set'
+      p.files      '/path/to/icon-set.tgz'  # array for multiple files
+      p.price      10.5
+      p.return_url 'http://zincmade.com/thankyou'
     end
 
     run Boutique::App
 
+Now setup the database tables:
+
+    % boutique --migrate
+
 With the settings above, a normal flow would look like:
 
-1. On your site, link the user to `/boutique/icon-set/` to purchase
+1. On your site, link the user to `/boutique/buy/icon-set/` to purchase
 2. User is redirected to paypal
 3. After completing paypal, user is redirected to 
-   `http://zincmade.com/?f=id-longhash`
-4. On this page, issue an AJAX request to `/boutique/purchases/id-longhash`.
-   The `download` field of the JSON will include the download URL.
+   `http://zincmade.com/thankyou?b=order-id`
+4. On this page, issue an AJAX request to `/boutique/purchases/order-id`.
+   The `downloads` field of the JSON will include the download URLs.
 
 Usage
 =====
@@ -45,20 +66,22 @@ Usage
 The web application is for customers, to get information about your products use
 the included command line application.
 
-    % boutique --list
-    % boutique --stats key --after date --before date
-    % boutique --clean
+    % boutique --stats productcode
+    % boutique --expire
+    % boutique --expire id
+    % boutique --remove id
 
 Development
 ===========
 
-The `config.ru` is for local development.  Start the server via `shotgun`
-command.  Tests are setup to run individually via `ruby test/*_test.rb` or
-run them all via `rake`.
+Tests are setup to run individually via `ruby test/*_test.rb` or run them all
+via `rake`.
 
 TODO
 ====
 
+* record names/emails of purchases from paypal
+* handle download expiration
 * boutique command line
 * initial migration support
 * email customer
