@@ -2,9 +2,9 @@ require File.expand_path('helper', File.dirname(__FILE__))
 
 class ConfigTest < BoutiqueTest
   def test_db
-    assert_equal(File.expand_path('../cert/private.pem', File.dirname(__FILE__)), Boutique.config.pem_private)
-    assert_equal(File.expand_path('../cert/public.pem', File.dirname(__FILE__)), Boutique.config.pem_public)
-    assert_equal(File.expand_path('../cert/private.pem', File.dirname(__FILE__)), Boutique.config.pem_private)
+    assert_equal(File.expand_path('../certs/private.pem', File.dirname(__FILE__)), Boutique.config.pem_private)
+    assert_equal(File.expand_path('../certs/public.pem', File.dirname(__FILE__)), Boutique.config.pem_public)
+    assert_equal(File.expand_path('../certs/private.pem', File.dirname(__FILE__)), Boutique.config.pem_private)
     assert_equal('/download', Boutique.config.download_path)
     assert_equal(File.expand_path('../temp', File.dirname(__FILE__)), Boutique.config.download_dir)
     assert_equal('sqlite3', Boutique.config.db_adapter)

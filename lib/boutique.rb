@@ -6,6 +6,7 @@ require 'cgi'
 require 'date'
 require 'digest/sha1'
 require 'json'
+require 'openssl'
 
 module Boutique
   VERSION = '0.0.1'
@@ -207,7 +208,7 @@ module Boutique
       }.to_json
     end
 
-    def paypal_url(notify_url)
+    def paypal_form(notify_url)
       values = {
         :business => Boutique.config.pp_email,
         :cmd => '_xclick',
@@ -218,9 +219,25 @@ module Boutique
         :notify_url => "#{notify_url}/b=#{boutique_id}",
         :return => "#{product.return_url}?b=#{boutique_id}"
       }
-      query = values.map { |kv| "#{CGI.escape(kv[0].to_s)}=#{CGI.escape(kv[1].to_s)}" }.join('&')
-      "#{Boutique.config.pp_url}?#{query}"
+      {'action' => Boutique.config.pp_url,
+       'cmd' => '_s-xclick',
+       'encrypted' => encrypt(values)}
     end
+
+    private
+    def encrypt(values)  
+      signed = OpenSSL::PKCS7::sign(
+        OpenSSL::X509::Certificate.new(File.read(Boutique.config.pem_public)),
+        OpenSSL::PKey::RSA.new(File.read(Boutique.config.pem_private), ''),
+        values.map { |k,v| "#{CGI.escape(k.to_s)}=#{CGI.escape(v.to_s)}" }.join("\n"),
+        [],
+        OpenSSL::PKCS7::BINARY)  
+      OpenSSL::PKCS7::encrypt(
+        [OpenSSL::X509::Certificate.new(File.read(Boutique.config.pem_paypal))],
+        signed.to_der,
+        OpenSSL::Cipher::Cipher::new("DES3"),
+        OpenSSL::PKCS7::BINARY).to_s.gsub("\n", "")  
+    end  
   end
 
   DataMapper.finalize
@@ -234,7 +251,14 @@ module Boutique
       purchase = Boutique::Purchase.new
       product.purchases << purchase
       product.save
-      redirect(purchase.paypal_url("http://#{request.host}/notify"))
+      form = purchase.paypal_form("http://#{request.host}/notify")
+      "<!doctype html><html><head><title>Redirecting to PayPal...</title>" +
+      "<meta charset='utf-8'></head><body>" +
+      "<form name='paypal' action='#{form['action']}'>" +
+      "<input type='hidden' name='cmd' value='#{form['cmd']}'>" +
+      "<input type='hidden' name='encrypted' value='#{form['encrypted']}'>" +
+      "<input type='submit' value='submit' style='visibility:hidden'>" +
+      "</form><script>document.paypal.submit();</script></body></html>"
     end
 
     get '/notify/:boutique_id' do

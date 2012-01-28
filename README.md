@@ -59,7 +59,6 @@ run them all via `rake`.
 TODO
 ====
 
-[ ] certificate/encrypted support
 [ ] boutique command line
 [ ] initial migration support
 [ ] email customer

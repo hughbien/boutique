@@ -28,10 +28,10 @@ class ModelTest < BoutiqueTest
     assert_equal(purchase.id, bid.split('-')[0].to_i)
     assert_equal(10, bid.split('-')[1].size)
 
-    assert_match(
-      'http://localhost?business=paypal_biz%40mailinator.com&cmd=_xclick&item_name=Ebook&item_number=ebook&amount=0.105E2&currency_code=USD&notify_url=http%3A%2F%2Flocalhost%2Fnotify',
-      purchase.paypal_url('http://localhost/notify')
-    )
+    form = purchase.paypal_form('http://localhost/notify')
+    assert_equal('http://localhost', form['action'])
+    assert_equal('_s-xclick', form['cmd'])
+    refute_nil(form['encrypted'])
 
     json = JSON.parse(purchase.to_json)
     assert_equal(purchase.id, json['id'])

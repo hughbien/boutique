@@ -9,11 +9,7 @@ class AppTest < BoutiqueTest
 
     purchase = Boutique::Purchase.first
     refute(purchase.nil?)
-
-    assert(last_response.redirect?)
-    assert(
-      purchase.paypal_url('http://localhost/notify'),
-      last_response.headers['Location'])
+    assert(last_response.ok?)
   end
 
   def test_purchase_non_existing_product
