@@ -273,7 +273,10 @@ module Boutique
     end
 
     get '/boutique/record/:boutique_id' do
-      get_purchase(params[:boutique_id]).to_json
+      json = get_purchase(params[:boutique_id]).to_json
+      params['jsonp'].nil? ?
+        json :
+        "#{params['jsonp']}(#{json})"
     end
 
     def get_purchase(boutique_id)
