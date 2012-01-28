@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'sinatra/base'
 require 'dm-core'
+require 'dm-types'
 require 'cgi'
 require 'date'
 require 'digest/sha1'
@@ -96,9 +97,9 @@ module Boutique
       @name
     end
 
-    def file(value=nil)
-      @file = value if !value.nil?
-      @file
+    def files(value=nil)
+      @files = value if !value.nil?
+      @files
     end
 
     def price(value=nil)
@@ -114,7 +115,7 @@ module Boutique
     def to_hash
       {:code => @code,
        :name => @name,
-       :file => @file,
+       :files => @files,
        :price => @price,
        :return_url => @return_url}
     end
@@ -126,7 +127,7 @@ module Boutique
     property :id, Serial
     property :code, String, :required => true, :unique => true
     property :name, String, :required => true, :unique => true
-    property :file, String, :required => true
+    property :files, CommaSeparatedList, :required => true
     property :price, Decimal, :required => true
     property :return_url, String, :required => true
 
@@ -142,7 +143,7 @@ module Boutique
     property :secret, String, :required => true
     property :transaction_id, String
     property :completed_at, DateTime
-    property :download, String
+    property :downloads, CommaSeparatedList
 
     belongs_to :product
 
@@ -164,11 +165,13 @@ module Boutique
 
     def link_download!
       return if !completed?
-      linked_file = "/#{Date.today.strftime('%Y%m%d')}-#{boutique_id}/#{File.basename(product.file)}"
-      full_dir = File.dirname("#{Boutique.config.download_dir}#{linked_file}")
-      `mkdir -p #{full_dir}`
-      `ln -s #{product.file} #{Boutique.config.download_dir}#{linked_file}`
-      self.download = "#{Boutique.config.download_path}#{linked_file}"
+      self.downloads = product.files.map do |file|
+        linked_file = "/#{Date.today.strftime('%Y%m%d')}-#{boutique_id}/#{File.basename(file)}"
+        full_dir = File.dirname("#{Boutique.config.download_dir}#{linked_file}")
+        `mkdir -p #{full_dir}`
+        `ln -s #{file} #{Boutique.config.download_dir}#{linked_file}`
+        "#{Boutique.config.download_path}#{linked_file}"
+      end
       self.counter += 1
     end
 
@@ -179,15 +182,14 @@ module Boutique
     end
 
     def to_json
-      json = {
+      {
         :id => id,
         :counter => counter,
         :completed => completed?,
         :name => product.name,
-        :code => product.code
-      }
-      json[:download] = self.download if !self.download.nil?
-      json.to_json
+        :code => product.code,
+        :downloads => downloads
+      }.to_json
     end
 
     def paypal_url(notify_url)

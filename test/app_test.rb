@@ -80,7 +80,7 @@ class BoutiqueTest < MiniTest::Unit::TestCase
     Boutique::Product.new(
       :code => 'ebook',
       :name => 'Ebook',
-      :file => File.expand_path('../README.md', File.dirname(__FILE__)),
+      :files => [File.expand_path('../README.md', File.dirname(__FILE__))],
       :price => 10.5,
       :return_url => 'http://zincmade.com')
   end

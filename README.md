@@ -56,6 +56,15 @@ The `config.ru` is for local development.  Start the server via `shotgun`
 command.  Tests are setup to run individually via `ruby test/*_test.rb` or
 run them all via `rake`.
 
+TODO
+====
+
+[ ] certificate/encrypted support
+[ ] boutique command line
+[ ] initial migration support
+[ ] email customer
+[ ] email exceptions to developer
+
 License
 =======
 
