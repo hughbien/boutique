@@ -4,6 +4,7 @@ require 'dm-core'
 require 'cgi'
 require 'date'
 require 'digest/sha1'
+require 'json'
 
 module Boutique
   VERSION = '0.0.1'
@@ -168,12 +169,25 @@ module Boutique
       `mkdir -p #{full_dir}`
       `ln -s #{product.file} #{Boutique.config.download_dir}#{linked_file}`
       self.download = "#{Boutique.config.download_path}#{linked_file}"
+      self.counter += 1
     end
 
     def boutique_id
       (self.id.nil? || self.secret.nil?) ?
         raise('Cannot get boutique_id for unsaved purchase') :
         "#{self.id}-#{self.secret}"
+    end
+
+    def to_json
+      json = {
+        :id => id,
+        :counter => counter,
+        :completed => completed?,
+        :name => product.name,
+        :code => product.code
+      }
+      json[:download] = self.download if !self.download.nil?
+      json.to_json
     end
 
     def paypal_url(notify_url)

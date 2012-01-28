@@ -40,6 +40,14 @@ class ModelTest < MiniTest::Unit::TestCase
       'http://localhost?business=paypal_biz%40mailinator.com&cmd=_xclick&item_name=Ebook&item_number=ebook&amount=0.105E2&currency_code=USD&notify_url=http%3A%2F%2Flocalhost%2Fnotify',
       purchase.paypal_url('http://localhost/notify')
     )
+
+    json = JSON.parse(purchase.to_json)
+    assert_equal(purchase.id, json['id'])
+    assert_equal(1, json['counter'])
+    assert(json['completed'])
+    assert_equal('Ebook', json['name'])
+    assert_equal('ebook', json['code'])
+    refute_nil(json['download'])
   end
 
   def test_product_create
