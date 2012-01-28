@@ -216,7 +216,7 @@ module Boutique
         :item_number => product.code,
         :amount => product.price,
         :currency_code => 'USD',
-        :notify_url => "#{notify_url}/b=#{boutique_id}",
+        :notify_url => "#{notify_url}/#{boutique_id}",
         :return => "#{product.return_url}?b=#{boutique_id}"
       }
       {'action' => Boutique.config.pp_url,
