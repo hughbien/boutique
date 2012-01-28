@@ -36,7 +36,7 @@ class BoutiqueTest < MiniTest::Unit::TestCase
     product.save
     refute(purchase.completed?)
 
-    get "/notify/#{purchase.boutique_id}?payment_status=Completed&txn_id=1337"
+    get "/notify/#{purchase.boutique_id}?payment_status=Completed&txn_id=1337&receiver_email=#{Boutique.config.pp_email}"
     assert(last_response.ok?)
 
     purchase.reload
