@@ -31,11 +31,11 @@ module Boutique
       purchases = product.purchases
       puts "* #{purchases.size} purchases have been initiated"
       puts "* #{purchases.select {|p| p.completed?}.size} purchases have been completed"
-      puts "* #{purchases.reduce(0) {|sum,p| sum + p.counter}} downloads have occurred"
+      puts "* #{purchases.reduce(0) {|sum,p| sum + p.counter}} downloads linked"
 
       puts ('-' * 40)
 
-      puts "id, downloads, email" if purchases.size > 0
+      puts "id, links, email" if purchases.size > 0
       purchases.sort_by {|p| p.counter }.reverse.each do |purchase|
         puts "* #{purchase.id}, #{purchase.counter}, #{purchase.email}" if purchase.completed?
       end
