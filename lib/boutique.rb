@@ -263,7 +263,8 @@ module Boutique
 
     post '/boutique/notify/:boutique_id' do
       purchase = get_purchase(params[:boutique_id])
-      if params['txn_id'] &&
+      if !purchase.completed? &&
+         params['txn_id'] &&
          params['payment_status'] &&
          params['receiver_email'] == Boutique.config.pp_email
         purchase.complete(params[:txn_id])
