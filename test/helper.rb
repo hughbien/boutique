@@ -4,6 +4,7 @@ require 'minitest/autorun'
 require 'rack'
 require 'rack/test'
 require 'rack/server'
+require 'fileutils'
 
 DataMapper.setup(:default, 'sqlite::memory:')
 DataMapper.auto_migrate!
@@ -23,6 +24,10 @@ class BoutiqueTest < MiniTest::Unit::TestCase
       c.pp_email      'paypal_biz@mailinator.com'
       c.pp_url        'http://localhost'
     end
+  end
+
+  def teardown
+    FileUtils.rm_rf(File.expand_path('../temp', File.dirname(__FILE__)))
   end
 
   private
