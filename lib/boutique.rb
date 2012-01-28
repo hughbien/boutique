@@ -154,16 +154,20 @@ module Boutique
     def complete(txn_id)
       self.transaction_id = txn_id
       self.completed_at = DateTime.now
+      link_download!
+    end
 
+    def completed?
+      !completed_at.nil? && !transaction_id.nil?
+    end
+
+    def link_download!
+      return if !completed?
       linked_file = "/#{Date.today.strftime('%Y%m%d')}-#{boutique_id}/#{File.basename(product.file)}"
       full_dir = File.dirname("#{Boutique.config.download_dir}#{linked_file}")
       `mkdir -p #{full_dir}`
       `ln -s #{product.file} #{Boutique.config.download_dir}#{linked_file}`
       self.download = "#{Boutique.config.download_path}#{linked_file}"
-    end
-
-    def completed?
-      !completed_at.nil? && !transaction_id.nil?
     end
 
     def boutique_id
