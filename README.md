@@ -45,9 +45,14 @@ can configure what products you sell here:
       p.return_url 'http://zincmade.com/thankyou'
     end
 
-    run Boutique::App
+    run Boutique::App if !ENV['BOUTIQUE_CMD']
 
-Now setup the database tables:
+Stick this in your `bashrc` or `zshrc`:
+
+    BOUTIQUE_CONFIG='/path/to/config.ru'
+
+Now setup the database tables (assuming you've already created the database and
+credentials):
 
     % boutique --migrate
 
@@ -81,7 +86,6 @@ TODO
 ====
 
 * boutique command line
-* initial migration support
 * email customer + recover action
 * email exceptions to developer
 

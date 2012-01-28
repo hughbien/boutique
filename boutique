@@ -1,4 +1,25 @@
 #!/usr/bin/env ruby
-require File.expand_path('../lib/boutique', File.dirname(__FILE__))
+require 'optparse'
+require File.expand_path('lib/boutique', File.dirname(__FILE__))
+require 'dm-migrations'
 
-Boutique.run!
+ENV['BOUTIQUE_CMD'] = '1'
+load(ENV['BOUTIQUE_CONFIG'] || 'config.ru')
+
+module Boutique
+  class Command
+    def self.migrate
+      DataMapper.auto_upgrade!
+    end
+  end
+end
+
+ARGV.options do |o|
+  o.set_summary_indent('  ')
+  o.banner =    "Usage: #{File.basename($0)} [OPTION]"
+  o.define_head "Admin for boutique"
+  o.on('-m', '--migrate', 'initial migration') { Boutique::Command.migrate; exit }
+  o.on('-h', '--help', 'show this help message') { puts o; exit }
+  o.parse!
+  puts o
+end
