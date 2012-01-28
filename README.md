@@ -80,10 +80,9 @@ via `rake`.
 TODO
 ====
 
-* handle download expiration
 * boutique command line
 * initial migration support
-* email customer
+* email customer + recover action
 * email exceptions to developer
 
 License
