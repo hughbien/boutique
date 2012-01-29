@@ -9,13 +9,26 @@ ENV['BOUTIQUE_CMD'] = '1'
 
 module Boutique
   class Command
+    def self.expire(id)
+      load_config
+      purchase = Boutique::Purchase.get(id.to_i)
+      if purchase.nil?
+        puts "Purchase #{id} not found"
+        return
+      end
+      purchase.downloads.each do |download|
+        FileUtils.rm_rf(File.dirname(
+          "#{Boutique.config.download_dir}#{download.sub(Boutique.config.download_path, '')}"))
+      end
+    end
+
     def self.expire_old
       load_config
       threshold = (Date.today - 1).strftime("%Y%m%d")
-      dirs = Dir.glob("#{Boutique::Config.download_dir}/*").
+      dirs = Dir.glob("#{Boutique.config.download_dir}/*").
         map {|f| File.basename(f) }.
         select {|f| f < threshold }
-      dirs.each {|d| FileUtils.rm_rf("#{Boutique::Config.download_dir}/#{d}") }
+      dirs.each {|d| FileUtils.rm_rf("#{Boutique.config.download_dir}/#{d}") }
 
       Boutique::Purchase.all(
         :transaction_id => nil,
@@ -66,9 +79,10 @@ ARGV.options do |o|
   o.set_summary_indent('  ')
   o.banner =    "Usage: #{File.basename($0)} [OPTION]"
   o.define_head "Admin for boutique"
+  o.on('-e', '--expire [id]', 'expire purchase') { |id| Boutique::Command.expire(id); exit }
   o.on('-E', '--expire-old', 'expire old data') { Boutique::Command.expire_old; exit }
   o.on('-m', '--migrate', 'initial migration') { Boutique::Command.migrate; exit }
-  o.on('-s', '--stats product', String, 'show stats on product') { |p| Boutique::Command.stats(p); exit }
+  o.on('-s', '--stats [product]', String, 'show stats on product') { |p| Boutique::Command.stats(p); exit }
   o.on('-h', '--help', 'show this help message') { puts o; exit }
   o.parse!
   puts o
