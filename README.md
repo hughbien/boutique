@@ -74,7 +74,7 @@ the included command line application.
     % boutique --stats productcode
     % boutique --expire
     % boutique --expire id
-    % boutique --remove id
+    % boutique --delete id
 
 Development
 ===========
@@ -85,7 +85,6 @@ via `rake`.
 TODO
 ====
 
-* boutique command line
 * email customer + recover action
 * email exceptions to developer
 
