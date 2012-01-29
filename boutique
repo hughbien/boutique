@@ -16,6 +16,10 @@ module Boutique
         map {|f| File.basename(f) }.
         select {|f| f < threshold }
       dirs.each {|d| FileUtils.rm_rf("#{Boutique::Config.download_dir}/#{d}") }
+
+      Boutique::Purchase.all(
+        :transaction_id => nil,
+        :created_at.lt => (Date.today - 1)).destroy
     end
 
     def self.migrate
@@ -40,7 +44,6 @@ module Boutique
       puts ('-' * 40)
 
       purchases = product.purchases
-      puts "* #{purchases.size} purchases have been initiated"
       puts "* #{purchases.select {|p| p.completed?}.size} purchases have been completed"
       puts "* #{purchases.reduce(0) {|sum,p| sum + p.counter}} downloads linked"
 
@@ -63,7 +66,7 @@ ARGV.options do |o|
   o.set_summary_indent('  ')
   o.banner =    "Usage: #{File.basename($0)} [OPTION]"
   o.define_head "Admin for boutique"
-  o.on('-E', '--expire-old', 'expire old downloads') { Boutique::Command.expire_old; exit }
+  o.on('-E', '--expire-old', 'expire old data') { Boutique::Command.expire_old; exit }
   o.on('-m', '--migrate', 'initial migration') { Boutique::Command.migrate; exit }
   o.on('-s', '--stats product', String, 'show stats on product') { |p| Boutique::Command.stats(p); exit }
   o.on('-h', '--help', 'show this help message') { puts o; exit }

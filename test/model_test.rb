@@ -15,6 +15,7 @@ class ModelTest < BoutiqueTest
     assert_nil(purchase.completed_at)
     assert_nil(purchase.downloads)
     refute_nil(purchase.secret)
+    refute_nil(purchase.created_at)
     refute(purchase.completed?)
 
     purchase.complete('1', 'john@mailinator.com', 'John')
