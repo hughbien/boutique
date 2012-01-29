@@ -23,7 +23,7 @@ end
 task :fixtures do
   ENV['BOUTIQUE_CMD'] = '1'
   config = File.expand_path('config.ru', File.dirname(__FILE__))
-  load(config) rescue DataOBjects::SyntaxError
+  load(config) rescue DataObjects::SyntaxError
 
   DataMapper.auto_migrate!
   load(config) # reload in case of product lis

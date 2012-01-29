@@ -2,11 +2,22 @@
 require 'optparse'
 require File.expand_path('lib/boutique', File.dirname(__FILE__))
 require 'dm-migrations'
+require 'date'
+require 'fileutils'
 
 ENV['BOUTIQUE_CMD'] = '1'
 
 module Boutique
   class Command
+    def self.expire_old
+      load_config
+      threshold = (Date.today - 1).strftime("%Y%m%d")
+      dirs = Dir.glob("#{Boutique::Config.download_dir}/*").
+        map {|f| File.basename(f) }.
+        select {|f| f < threshold }
+      dirs.each {|d| FileUtils.rm_rf("#{Boutique::Config.download_dir}/#{d}") }
+    end
+
     def self.migrate
       load_config rescue DataObjects::SyntaxError
       DataMapper.auto_upgrade!
@@ -52,8 +63,9 @@ ARGV.options do |o|
   o.set_summary_indent('  ')
   o.banner =    "Usage: #{File.basename($0)} [OPTION]"
   o.define_head "Admin for boutique"
-  o.on('-s', '--stats product', String, 'show stats on product') { |p| Boutique::Command.stats(p); exit }
+  o.on('-E', '--expire-old', 'expire old downloads') { Boutique::Command.expire_old; exit }
   o.on('-m', '--migrate', 'initial migration') { Boutique::Command.migrate; exit }
+  o.on('-s', '--stats product', String, 'show stats on product') { |p| Boutique::Command.stats(p); exit }
   o.on('-h', '--help', 'show this help message') { puts o; exit }
   o.parse!
   puts o
