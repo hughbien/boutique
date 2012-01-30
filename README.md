@@ -24,6 +24,7 @@ can configure what products you sell here:
     require 'boutique'
 
     Boutique.configure do |c|
+      c.dev_email      'dev@mailinator.com'
       c.pem_private    '/path/to/private.pem'
       c.pem_public     '/path/to/public.pem'
       c.pem_paypal     '/path/to/paypal.pem'
@@ -81,12 +82,6 @@ Development
 
 Tests are setup to run individually via `ruby test/*_test.rb` or run them all
 via `rake`.
-
-TODO
-====
-
-* recover action
-* email exceptions to developer
 
 License
 =======

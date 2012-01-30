@@ -40,6 +40,11 @@ module Boutique
   end
 
   class Config
+    def self.dev_email(value=nil)
+      @dev_email = value if !value.nil?
+      @dev_email
+    end
+
     def self.pem_private(value=nil)
       @pem_private = value if !value.nil?
       @pem_private
@@ -279,6 +284,18 @@ module Boutique
   DataMapper.finalize
 
   class App < Sinatra::Base
+    set :raise_errors, false
+    set :show_exceptions, false
+
+    error do
+      Pony.mail(
+        :to => Boutique.config.dev_email,
+        :from => "boutique@#{Boutique.config.dev_email.split('@')[1..-1]}",
+        :subject => 'Production Exception',
+        :body => request.env['sinatra.error'].to_s
+      ) if Boutique.config.dev_email
+    end
+
     post '/boutique/buy/:code' do
       product = Boutique::Product.first(:code => params[:code])
       if product.nil?
