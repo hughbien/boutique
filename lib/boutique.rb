@@ -304,6 +304,7 @@ module Boutique
          params['payment_status'] &&
          params['receiver_email'] == Boutique.config.pp_email
         purchase.complete(params['txn_id'], params['payer_email'], params['first_name'])
+        purchase.send_mail
         purchase.save
       end
       ''

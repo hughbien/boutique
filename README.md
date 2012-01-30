@@ -85,7 +85,7 @@ via `rake`.
 TODO
 ====
 
-* email customer + recover action
+* recover action
 * email exceptions to developer
 
 License
