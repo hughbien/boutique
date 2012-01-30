@@ -11,7 +11,7 @@ require 'openssl'
 require 'pony'
 
 module Boutique
-  VERSION = '0.0.3'
+  VERSION = '0.0.4'
 
   class << self
     def configure(setup_db=true)
