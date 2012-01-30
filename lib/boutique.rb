@@ -310,6 +310,16 @@ module Boutique
       ''
     end
 
+    post '/boutique/recover/:code' do
+      product = Boutique::Product.first(:code => params[:code])
+      purchase = product.purchases.first(:email => params['email']) if product
+      if product.nil? || purchase.nil? || !purchase.completed?
+        halt(404, "purchase #{params[:code]}/#{params['email']} not found")
+      end
+      purchase.send_mail
+      purchase.boutique_id
+    end
+
     get '/boutique/record/:boutique_id' do
       purchase = get_purchase(params[:boutique_id])
       purchase.maybe_refresh_downloads!

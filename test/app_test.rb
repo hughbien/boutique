@@ -39,12 +39,25 @@ class AppTest < BoutiqueTest
     assert(last_response.not_found?)
   end
 
-  def test_record
-    product = ebook_product
-    purchase = Boutique::Purchase.new
-    product.purchases << purchase
-    product.save
+  def test_recover
+    purchase = ebook_purchase
+    purchase.complete('1337', 'john@mailinator.com', 'John')
+    purchase.save
+    assert_nil(Pony.last_mail)
 
+    post "/boutique/recover/ebook", 'email' => 'john@mailinator.com'
+    assert(last_response.ok?)
+    assert_equal(purchase.boutique_id, last_response.body)
+    refute_nil(Pony.last_mail)
+  end
+
+  def test_recover_not_found
+    post "/boutique/recover/99-notfound"
+    assert(last_response.not_found?)
+  end
+
+  def test_record
+    purchase = ebook_purchase
     get "/boutique/record/#{purchase.boutique_id}"
     assert(last_response.ok?)
 
@@ -62,6 +75,14 @@ class AppTest < BoutiqueTest
   end
 
   private
+  def ebook_purchase
+    product = ebook_product
+    purchase = Boutique::Purchase.new
+    product.purchases << purchase
+    product.save
+    purchase
+  end
+
   def app
     @app ||= Rack::Server.new.app
   end

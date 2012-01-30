@@ -37,6 +37,7 @@ class BoutiqueTest < MiniTest::Unit::TestCase
       c.pp_email      'paypal_biz@mailinator.com'
       c.pp_url        'http://localhost'
     end
+    Pony.mail(nil)
   end
 
   def teardown
