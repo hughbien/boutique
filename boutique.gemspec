@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.files         = Dir.glob('*.{md,rb,ru}') +
                     %w(boutique) +
                     Dir.glob('{lib,test}/*.rb')
-  s.require_paths = 'lib'
+  s.require_paths = ['lib']
   s.bindir        = '.'
   s.executables   = ['boutique']
 end
