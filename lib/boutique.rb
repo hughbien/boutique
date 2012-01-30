@@ -8,6 +8,7 @@ require 'date'
 require 'digest/sha1'
 require 'json'
 require 'openssl'
+require 'pony'
 
 module Boutique
   VERSION = '0.0.3'
@@ -217,6 +218,19 @@ module Boutique
 
     def random_hash
       Digest::SHA1.hexdigest("#{DateTime.now}#{rand}")[0..9]
+    end
+
+    def send_mail
+      raise 'Cannot send link to incomplete purchase' if !completed?
+      Pony.mail(
+        :to => self.email,
+        :from => self.product.support_email,
+        :subject => "#{self.product.name} Receipt",
+        :body => "Thanks for purchasing #{self.product.name}!  " +
+                 "To download it, follow this link:\n\n" +
+                 "    #{self.product.return_url}?b=#{boutique_id}\n\n" +
+                 "Let us know if you have any troubles.\n"
+      )
     end
 
     def to_json

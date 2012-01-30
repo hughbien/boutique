@@ -39,6 +39,16 @@ class ModelTest < BoutiqueTest
     assert_equal('_s-xclick', form['cmd'])
     refute_nil(form['encrypted'])
 
+    purchase.send_mail
+    assert_equal({
+      :to => 'john@mailinator.com',
+      :from => 'support@zincmade.com',
+      :subject => 'Ebook Receipt',
+      :body => "Thanks for purchasing Ebook!  To download it, follow this link:\n\n" +
+               "    http://zincmade.com?b=#{purchase.boutique_id}\n\n" +
+               "Let us know if you have any troubles.\n"
+    }, Pony.last_mail)
+
     json = JSON.parse(purchase.to_json)
     assert_equal(purchase.id, json['id'])
     assert_equal(2, json['counter'])

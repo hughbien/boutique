@@ -9,6 +9,16 @@ require 'fileutils'
 DataMapper.setup(:default, 'sqlite::memory:')
 DataMapper.auto_migrate!
 
+module Pony
+  def self.mail(fields)
+    @last_mail = fields
+  end
+
+  def self.last_mail
+    @last_mail
+  end
+end
+
 class BoutiqueTest < MiniTest::Unit::TestCase
   def setup
     Boutique::Purchase.all.destroy
