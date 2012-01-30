@@ -16,10 +16,11 @@ Boutique.configure(!ENV['BOUTIQUE_CMD'].nil?) do |c|
 end
 
 Boutique.product('readme') do |p|
-  p.name       'README document'
-  p.files      File.expand_path('README.md', File.dirname(__FILE__))
-  p.price      1.5
-  p.return_url 'http://localhost'
+  p.name          'README document'
+  p.files         File.expand_path('README.md', File.dirname(__FILE__))
+  p.price         1.5
+  p.return_url    'http://localhost'
+  p.support_email 'support@localhost'
 end
 
 run Boutique::App if !ENV['BOUTIQUE_CMD']

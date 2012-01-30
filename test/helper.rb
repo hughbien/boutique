@@ -40,6 +40,7 @@ class BoutiqueTest < MiniTest::Unit::TestCase
       :name => 'Ebook',
       :files => [File.expand_path('../README.md', File.dirname(__FILE__))],
       :price => 10.5,
-      :return_url => 'http://zincmade.com')
+      :return_url => 'http://zincmade.com',
+      :support_email => 'support@zincmade.com')
   end
 end

@@ -126,12 +126,18 @@ module Boutique
       @return_url
     end
 
+    def support_email(value=nil)
+      @support_email = value if !value.nil?
+      @support_email
+    end
+
     def to_hash
       {:code => @code,
        :name => @name,
        :files => @files,
        :price => @price,
-       :return_url => @return_url}
+       :return_url => @return_url,
+       :support_email => @support_email}
     end
   end
 
@@ -144,6 +150,7 @@ module Boutique
     property :files, CommaSeparatedList, :required => true
     property :price, Decimal, :required => true
     property :return_url, String, :required => true
+    property :support_email, String, :required => true
 
     has n, :purchases
   end

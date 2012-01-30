@@ -59,6 +59,7 @@ module Boutique
       puts "Files:  #{product.files.join("\n        ")}"
       printf("Price:  $%.2f\n" % product.price)
       puts "Return: #{product.return_url}"
+      puts "Email:  #{product.support_email}"
 
       puts ('-' * 40)
 
