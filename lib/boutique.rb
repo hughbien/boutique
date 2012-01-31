@@ -11,7 +11,7 @@ require 'openssl'
 require 'pony'
 
 module Boutique
-  VERSION = '0.0.5'
+  VERSION = '0.0.6'
 
   class << self
     def configure(setup_db=true)
@@ -296,7 +296,7 @@ module Boutique
       ) if Boutique.config.dev_email
     end
 
-    post '/boutique/buy/:code' do
+    post '/buy/:code' do
       product = Boutique::Product.first(:code => params[:code])
       if product.nil?
         halt(404, "product #{params[:code]} not found")
@@ -314,7 +314,7 @@ module Boutique
       "</form><script>document.paypal.submit();</script></body></html>"
     end
 
-    post '/boutique/notify/:boutique_id' do
+    post '/notify/:boutique_id' do
       purchase = get_purchase(params[:boutique_id])
       if !purchase.completed? &&
          params['txn_id'] &&
@@ -327,7 +327,7 @@ module Boutique
       ''
     end
 
-    post '/boutique/recover/:code' do
+    post '/recover/:code' do
       product = Boutique::Product.first(:code => params[:code])
       purchase = product.purchases.first(:email => params['email']) if product
       if product.nil? || purchase.nil? || !purchase.completed?
@@ -337,7 +337,7 @@ module Boutique
       purchase.boutique_id
     end
 
-    get '/boutique/record/:boutique_id' do
+    get '/record/:boutique_id' do
       purchase = get_purchase(params[:boutique_id])
       purchase.maybe_refresh_downloads!
       params['jsonp'].nil? ?

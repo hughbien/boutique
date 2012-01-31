@@ -36,7 +36,7 @@ can configure what products you sell here:
       c.db_password    'secret'
       c.db_database    'boutique'
       c.pp_email       'paypal_biz@mailinator.com'
-      c.pp_url         'http://https://www.sandbox.paypal.com/cgi-bin/webscr'
+      c.pp_url         'https://www.sandbox.paypal.com/cgi-bin/webscr'
     end
 
     Boutique.product('icon-set') do |p|
@@ -59,11 +59,11 @@ credentials):
 
 With the settings above, a normal flow would look like:
 
-1. On your site, link the user to `/boutique/buy/icon-set/` to purchase
+1. On your site, link the user to `/buy/icon-set/` to purchase
 2. User is redirected to paypal
 3. After completing paypal, user is redirected to 
    `http://zincmade.com/thankyou?b=order-id`
-4. On this page, issue an AJAX request to `/boutique/purchases/order-id`.
+4. On this page, issue an AJAX request to `/purchases/order-id`.
    The `downloads` field of the JSON will include the download URLs.
 
 Usage

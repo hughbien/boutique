@@ -5,7 +5,7 @@ class AppTest < BoutiqueTest
 
   def test_redirect_to_paypal
     ebook_product.save
-    post '/boutique/buy/ebook'
+    post '/buy/ebook'
 
     purchase = Boutique::Purchase.first
     refute(purchase.nil?)
@@ -13,7 +13,7 @@ class AppTest < BoutiqueTest
   end
 
   def test_purchase_non_existing_product
-    post '/boutique/buy/non-existing-product'
+    post '/buy/non-existing-product'
     assert(last_response.not_found?)
   end
 
@@ -25,7 +25,7 @@ class AppTest < BoutiqueTest
     refute(purchase.completed?)
     assert_nil(Pony.last_mail)
 
-    post "/boutique/notify/#{purchase.boutique_id}?payment_status=Completed&txn_id=1337&receiver_email=#{Boutique.config.pp_email}"
+    post "/notify/#{purchase.boutique_id}?payment_status=Completed&txn_id=1337&receiver_email=#{Boutique.config.pp_email}"
     assert(last_response.ok?)
 
     purchase.reload
@@ -35,7 +35,7 @@ class AppTest < BoutiqueTest
   end
 
   def test_notify_not_found
-    post "/boutique/notify/99-notfound"
+    post "/notify/99-notfound"
     assert(last_response.not_found?)
   end
 
@@ -45,20 +45,20 @@ class AppTest < BoutiqueTest
     purchase.save
     assert_nil(Pony.last_mail)
 
-    post "/boutique/recover/ebook", 'email' => 'john@mailinator.com'
+    post "/recover/ebook", 'email' => 'john@mailinator.com'
     assert(last_response.ok?)
     assert_equal(purchase.boutique_id, last_response.body)
     refute_nil(Pony.last_mail)
   end
 
   def test_recover_not_found
-    post "/boutique/recover/99-notfound"
+    post "/recover/99-notfound"
     assert(last_response.not_found?)
   end
 
   def test_record
     purchase = ebook_purchase
-    get "/boutique/record/#{purchase.boutique_id}"
+    get "/record/#{purchase.boutique_id}"
     assert(last_response.ok?)
 
     json = JSON.parse(last_response.body)
@@ -70,7 +70,7 @@ class AppTest < BoutiqueTest
   end
 
   def test_record_not_found
-    get "/boutique/record/99-notfound"
+    get "/record/99-notfound"
     assert(last_response.not_found?)
   end
 
