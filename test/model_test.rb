@@ -5,7 +5,7 @@ class ModelTest < BoutiqueTest
     product = ebook_product
     product.save
     count = Boutique::Purchase.count
-    purchase = Boutique::Purchase.create({})
+    purchase = Boutique::Purchase.new
     product.purchases << purchase
     product.save
 

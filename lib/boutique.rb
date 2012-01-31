@@ -9,6 +9,8 @@ require 'json'
 require 'openssl'
 require 'pony'
 
+DataMapper::Model.raise_on_save_failure = true
+
 module Boutique
   VERSION = '0.0.7'
 

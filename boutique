@@ -42,8 +42,11 @@ module Boutique
     end
 
     def self.migrate
-      load_config rescue DataObjects::SyntaxError
+      load_config
       DataMapper.auto_upgrade!
+    rescue DataObjects::SyntaxError => e
+      DataMapper.auto_upgrade!
+      load_config
     end
 
     def self.stats(code)
