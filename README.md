@@ -13,9 +13,16 @@ You'll need some private/public certificates:
     % openssl genrsa -out private.pem 1024
     % openssl req -new -key private.pem -x509 -days 365 -out public.pem
 
-You can download PayPal's public certificate under `My Account > Encrypted
+Make sure the email you use is the same as your PayPal merchant email, or else
+PayPal will reject it.
+
+You can download PayPal's public certificate under `Profile > Encrypted
 Payment Settings`.  Click the download button for PayPal Public Certificate.
 Rename this certificate to something like `paypal.pem`.
+
+While you're there, upload the `public.pem` certificate you just generated.  Copy
+the `Cert ID`, you'll use it for the `pem_cert_id` field in your config.  You
+can block unencrypted requests from `Website Payment Preferences`.
 
 Setup a `config.ru` file and run it like any other Sinatra application.  You
 can configure what products you sell here:
