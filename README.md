@@ -94,7 +94,6 @@ via `rake`.
 TODO
 ====
 
-* BUG: emails don't go out in production
 * BUG: logs are required especially for errors
 
 License

@@ -240,7 +240,7 @@ module Boutique
         :body => "Thanks for purchasing #{self.product.name}!  " +
                  "To download it, follow this link:\n\n" +
                  "    #{self.product.return_url}?b=#{boutique_id}\n\n" +
-                 "Let us know if you have any troubles.\n"
+                 "Please reply if you have any troubles.\n"
       )
     end
 
