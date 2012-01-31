@@ -324,6 +324,8 @@ module Boutique
       if !purchase.completed? &&
          params['txn_id'] &&
          params['payment_status'] &&
+         params['first_name'] &&
+         params['payer_email'] &&
          params['receiver_email'] == Boutique.config.pp_email
         purchase.complete(params['txn_id'], params['payer_email'], params['first_name'])
         purchase.send_mail

@@ -25,7 +25,7 @@ class AppTest < BoutiqueTest
     refute(purchase.completed?)
     assert_nil(Pony.last_mail)
 
-    post "/notify/#{purchase.boutique_id}?payment_status=Completed&txn_id=1337&receiver_email=#{Boutique.config.pp_email}"
+    post "/notify/#{purchase.boutique_id}?payment_status=Completed&txn_id=1337&receiver_email=#{Boutique.config.pp_email}&payer_email=john@mailinator.com&first_name=John"
     assert(last_response.ok?)
 
     purchase.reload
