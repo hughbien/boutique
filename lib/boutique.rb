@@ -12,7 +12,7 @@ require 'pony'
 DataMapper::Model.raise_on_save_failure = true
 
 module Boutique
-  VERSION = '0.0.7'
+  VERSION = '0.0.8'
 
   class << self
     def configure(setup_db=true)
