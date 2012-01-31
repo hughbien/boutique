@@ -11,7 +11,7 @@ Installation
 You'll need some private/public certificates:
 
     % openssl genrsa -out private.pem 1024
-    % openssl req -new -key private.pem -x509 -days 365 -out public.pem
+    % openssl req -new -key private.pem -x509 -days 1095 -out public.pem
 
 Make sure the email you use is the same as your PayPal merchant email, or else
 PayPal will reject it.

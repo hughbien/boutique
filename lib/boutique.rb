@@ -297,8 +297,8 @@ module Boutique
     error do
       Pony.mail(
         :to => Boutique.config.dev_email,
-        :from => "boutique@#{Boutique.config.dev_email.split('@')[1..-1]}",
-        :subject => 'Production Exception',
+        :from => "boutique@#{Boutique.config.dev_email.split('@')[1..-1].join}",
+        :subject => 'Boutique Error',
         :body => request.env['sinatra.error'].to_s
       ) if Boutique.config.dev_email
     end
