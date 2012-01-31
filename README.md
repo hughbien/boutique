@@ -25,6 +25,7 @@ can configure what products you sell here:
 
     Boutique.configure do |c|
       c.dev_email      'dev@mailinator.com'
+      c.pem_cert_id    'LONGCERTID'
       c.pem_private    '/path/to/private.pem'
       c.pem_public     '/path/to/public.pem'
       c.pem_paypal     '/path/to/paypal.pem'

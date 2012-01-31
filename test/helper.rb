@@ -25,6 +25,7 @@ class BoutiqueTest < MiniTest::Unit::TestCase
     Boutique::Product.all.destroy
     Boutique.configure(false) do |c|
       c.dev_email     'dev@localhost'
+      c.pem_cert_id   'LONGCERTID'
       c.pem_private   File.expand_path('../certs/private.pem', File.dirname(__FILE__))
       c.pem_public    File.expand_path('../certs/public.pem', File.dirname(__FILE__))
       c.pem_paypal    File.expand_path('../certs/paypal.pem', File.dirname(__FILE__))

@@ -3,6 +3,7 @@ require File.expand_path('helper', File.dirname(__FILE__))
 class ConfigTest < BoutiqueTest
   def test_db
     assert_equal('dev@localhost', Boutique.config.dev_email)
+    assert_equal('LONGCERTID', Boutique.config.pem_cert_id)
     assert_equal(File.expand_path('../certs/private.pem', File.dirname(__FILE__)), Boutique.config.pem_private)
     assert_equal(File.expand_path('../certs/public.pem', File.dirname(__FILE__)), Boutique.config.pem_public)
     assert_equal(File.expand_path('../certs/private.pem', File.dirname(__FILE__)), Boutique.config.pem_private)

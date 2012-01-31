@@ -45,6 +45,11 @@ module Boutique
       @dev_email
     end
 
+    def self.pem_cert_id(value=nil)
+      @pem_cert_id = value if !value.nil?
+      @pem_cert_id
+    end
+
     def self.pem_private(value=nil)
       @pem_private = value if !value.nil?
       @pem_private
@@ -258,7 +263,8 @@ module Boutique
         :amount => product.price,
         :currency_code => 'USD',
         :notify_url => "#{notify_url}/#{boutique_id}",
-        :return => "#{product.return_url}?b=#{boutique_id}"
+        :return => "#{product.return_url}?b=#{boutique_id}",
+        :cert_id => Boutique.config.pem_cert_id
       }
       {'action' => Boutique.config.pp_url,
        'cmd' => '_s-xclick',
