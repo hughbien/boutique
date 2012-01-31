@@ -3,7 +3,6 @@ require 'sinatra/base'
 require 'dm-core'
 require 'dm-types'
 require 'dm-timestamps'
-require 'cgi'
 require 'date'
 require 'digest/sha1'
 require 'json'
@@ -260,7 +259,7 @@ module Boutique
         :cmd => '_xclick',
         :item_name => product.name,
         :item_number => product.code,
-        :amount => product.price,
+        :amount => product.price.to_f,
         :currency_code => 'USD',
         :notify_url => "#{notify_url}/#{boutique_id}",
         :return => "#{product.return_url}?b=#{boutique_id}",
@@ -276,7 +275,7 @@ module Boutique
       signed = OpenSSL::PKCS7::sign(
         OpenSSL::X509::Certificate.new(File.read(Boutique.config.pem_public)),
         OpenSSL::PKey::RSA.new(File.read(Boutique.config.pem_private), ''),
-        values.map { |k,v| "#{CGI.escape(k.to_s)}=#{CGI.escape(v.to_s)}" }.join("\n"),
+        values.map { |k,v| "#{k.to_s}=#{v.to_s}" }.join("\n"),
         [],
         OpenSSL::PKCS7::BINARY)  
       OpenSSL::PKCS7::encrypt(
@@ -313,7 +312,7 @@ module Boutique
       form = purchase.paypal_form("http://#{request.host}/notify")
       "<!doctype html><html><head><title>Redirecting to PayPal...</title>" +
       "<meta charset='utf-8'></head><body>" +
-      "<form name='paypal' action='#{form['action']}'>" +
+      "<form name='paypal' method='post' action='#{form['action']}'>" +
       "<input type='hidden' name='cmd' value='#{form['cmd']}'>" +
       "<input type='hidden' name='encrypted' value='#{form['encrypted']}'>" +
       "<input type='submit' value='submit' style='visibility:hidden'>" +
