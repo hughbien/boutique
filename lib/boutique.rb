@@ -12,7 +12,7 @@ require 'pony'
 DataMapper::Model.raise_on_save_failure = true
 
 module Boutique
-  VERSION = '0.0.8'
+  VERSION = '0.0.9'
 
   class << self
     def configure(setup_db=true)
@@ -303,7 +303,7 @@ module Boutique
       ) if Boutique.config.dev_email
     end
 
-    post '/buy/:code' do
+    get '/buy/:code' do
       product = Boutique::Product.first(:code => params[:code])
       if product.nil?
         halt(404, "product #{params[:code]} not found")

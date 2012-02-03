@@ -5,7 +5,7 @@ class AppTest < BoutiqueTest
 
   def test_redirect_to_paypal
     ebook_product.save
-    post '/buy/ebook'
+    get '/buy/ebook'
 
     purchase = Boutique::Purchase.first
     refute(purchase.nil?)
@@ -13,7 +13,7 @@ class AppTest < BoutiqueTest
   end
 
   def test_purchase_non_existing_product
-    post '/buy/non-existing-product'
+    get '/buy/non-existing-product'
     assert(last_response.not_found?)
   end
 
