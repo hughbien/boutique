@@ -6,12 +6,12 @@ Boutique is a Sinatra module for selling digital goods.  Still under development
 Installation
 ============
 
-    % gem install boutique
+    $ gem install boutique
 
 You'll need some private/public certificates:
 
-    % openssl genrsa -out private.pem 1024
-    % openssl req -new -key private.pem -x509 -days 1095 -out public.pem
+    $ openssl genrsa -out private.pem 1024
+    $ openssl req -new -key private.pem -x509 -days 1095 -out public.pem
 
 Make sure the email you use is the same as your PayPal merchant email, or else
 PayPal will reject it.
@@ -63,7 +63,7 @@ Stick this in your `bashrc` or `zshrc`:
 Now setup the database tables (assuming you've already created the database and
 credentials):
 
-    % boutique --migrate
+    $ boutique --migrate
 
 With the settings above, a normal flow would look like:
 
@@ -80,10 +80,10 @@ Usage
 The web application is for customers, to get information about your products use
 the included command line application.
 
-    % boutique --stats productcode
-    % boutique --expire
-    % boutique --expire id
-    % boutique --delete id
+    $ boutique --stats productcode
+    $ boutique --expire
+    $ boutique --expire id
+    $ boutique --delete id
 
 Development
 ===========
@@ -99,5 +99,5 @@ TODO
 License
 =======
 
-Copyright 2012 Hugh Bien - http://hughbien.com.
+Copyright Hugh Bien - http://hughbien.com.
 Released under BSD License, see LICENSE.md for more info.

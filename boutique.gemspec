@@ -1,8 +1,6 @@
-require File.expand_path('lib/boutique', File.dirname(__FILE__)) 
- 
 Gem::Specification.new do |s|
   s.name        = 'boutique'
-  s.version     = Boutique::VERSION
+  s.version     = '0.0.9'
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Hugh Bien']
   s.email       = ['hugh@hughbien.com']
