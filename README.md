@@ -91,11 +91,6 @@ Development
 Tests are setup to run individually via `ruby test/*_test.rb` or run them all
 via `rake`.
 
-TODO
-====
-
-* BUG: logs are required especially for errors
-
 License
 =======
 
