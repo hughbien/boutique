@@ -16,7 +16,7 @@ module Boutique
 
   class << self
     def configure(setup_db=true)
-      yield Config
+      yield config
       DataMapper.setup(:default,
         :adapter  => config.db_adapter,
         :host     => config.db_host,
@@ -27,47 +27,54 @@ module Boutique
     end
 
     def config
-      Config
+      @config ||= Config.new('config')
     end
 
-    def product(code)
-      builder = ProductBuilder.new
-      builder.code(code)
-      yield builder
-      product = Product.first_or_create({:code => code}, builder.to_hash)
-      product.save
-      product
+    def product(key)
+      yield Product.new(key)
+    end
+
+    def list(key)
+      yield List.new(key)
     end
   end
 
-  module AttrOption
-    def attr_option(*names)
-      options = names.last.is_a?(Hash) ? names.pop : {}
-      klass = options[:singleton] ? singleton_class : self
-      names.each do |name|
-        klass.send(:define_method, name) do |*args|
-          value = args[0]
-          instance_variable_set("@#{name}".to_sym, value) if !value.nil?
-          instance_variable_get("@#{name}".to_sym)
+  module MemoryResource
+    def self.included(base)
+      base.extend(ClassMethods)
+      base.attr_resource :key
+      base.instance_variable_set("@db".to_sym, {})
+    end
+
+    module ClassMethods
+      def attr_resource(*names)
+        names.each do |name|
+          define_method(name) do |*args|
+            value = args[0]
+            instance_variable_set("@#{name}".to_sym, value) if !value.nil?
+            instance_variable_get("@#{name}".to_sym)
+          end
         end
       end
-      klass.send(:define_method, :to_hash) do
-        hash = {}
-        names.each do
-          |name| hash[name.to_sym] = instance_variable_get("@#{name}".to_sym)
-        end
-        hash
+
+      def [](key)
+        @db[key]
+      end
+
+      def []=(key, value)
+        @db[key] = value
       end
     end
 
-    def cattr_option(*names)
-      attr_option(*names, singleton: true)
+    def initialize(key)
+      @key = key
+      self.class[key] = self
     end
   end
 
   class Config
-    extend AttrOption
-    cattr_option :email,
+    include MemoryResource
+    attr_resource :email,
       :stripe_api_key,
       :download_dir,
       :download_path,
@@ -78,27 +85,21 @@ module Boutique
       :db_database
   end
 
-  class ProductBuilder
-    extend AttrOption
-    attr_option :code, :from, :files, :price
+  class Product
+    include MemoryResource
+    attr_resource :from, :files, :price
   end
 
-  class Product
-    include DataMapper::Resource
-
-    property :id, Serial
-    property :code, String, required: true, unique: true
-    property :files, CommaSeparatedList, required: true
-    property :price, Decimal, required: true
-    property :from, String, required: true
-
-    has n, :purchases
+  class List
+    include MemoryResource
+    attr_resource :from, :emails
   end
 
   class Purchase
     include DataMapper::Resource
 
     property :id, Serial
+    property :product_key, String, required: true
     property :created_at, DateTime
     property :counter, Integer, required: true
     property :secret, String, required: true
@@ -107,8 +108,6 @@ module Boutique
     property :name, String
     property :completed_at, DateTime
     property :downloads, CommaSeparatedList
-
-    belongs_to :product
   end
 
   DataMapper.finalize
