@@ -26,15 +26,16 @@ class BoutiqueTest < MiniTest::Unit::TestCase
     Boutique::List.reset_db
     Boutique::Product.reset_db
     Boutique.configure(false) do |c|
-      c.email          'dev@localhost'
+      c.dev_email      'dev@localhost'
       c.stripe_api_key 'sk_test_abcdefghijklmnopqrstuvwxyz'
       c.download_path  '/download'
       c.download_dir   File.expand_path('../temp', File.dirname(__FILE__))
-      c.db_adapter     'sqlite3'
-      c.db_host        'localhost'
-      c.db_username    'root'
-      c.db_password    'secret'
-      c.db_database    'db.sqlite3'
+      c.db_options(adapter: 'sqlite3',
+        host: 'localhost',
+        username: 'root',
+        password: 'secret',
+        database: 'db.sqlite3')
+      c.email_options(via: :sendmail)
     end
     Pony.mail(nil)
   end

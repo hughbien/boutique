@@ -2,7 +2,7 @@ require File.expand_path('helper', File.dirname(__FILE__))
 
 class ConfigTest < BoutiqueTest
   def test_db
-    assert_equal('dev@localhost', Boutique.config.email)
+    assert_equal('dev@localhost', Boutique.config.dev_email)
     assert_equal(
       'sk_test_abcdefghijklmnopqrstuvwxyz',
       Boutique.config.stripe_api_key)
@@ -10,10 +10,13 @@ class ConfigTest < BoutiqueTest
     assert_equal(
       File.expand_path('../temp', File.dirname(__FILE__)),
       Boutique.config.download_dir)
-    assert_equal('sqlite3', Boutique.config.db_adapter)
-    assert_equal('localhost', Boutique.config.db_host)
-    assert_equal('root', Boutique.config.db_username)
-    assert_equal('secret', Boutique.config.db_password)
-    assert_equal('db.sqlite3', Boutique.config.db_database)
+    assert_equal({
+      adapter: 'sqlite3',
+      host: 'localhost',
+      username: 'root',
+      password: 'secret',
+      database: 'db.sqlite3'},
+      Boutique.config.db_options)
+    assert_equal({via: :sendmail}, Boutique.config.email_options)
   end
 end

@@ -18,13 +18,8 @@ module Boutique
   class << self
     def configure(setup_db=true)
       yield config
-      DataMapper.setup(:default,
-        :adapter  => config.db_adapter,
-        :host     => config.db_host,
-        :username => config.db_username,
-        :password => config.db_password,
-        :database => config.db_database
-      ) if setup_db
+      DataMapper.setup(:default, config.db_options) if setup_db
+      Pony.options = config.email_options if !config.email_options.nil?
     end
 
     def config
@@ -87,15 +82,12 @@ module Boutique
 
   class Config
     include MemoryResource
-    attr_resource :email,
+    attr_resource :dev_email,
       :stripe_api_key,
       :download_dir,
       :download_path,
-      :db_adapter,
-      :db_host,
-      :db_username,
-      :db_password,
-      :db_database
+      :db_options,
+      :email_options
   end
 
   class Product
@@ -165,11 +157,10 @@ module Boutique
 
     error do
       Pony.mail(
-        :to => Boutique.config.email,
-        :from => "boutique@#{Boutique.config.email.split('@')[1..-1].join}",
+        :to => Boutique.config.dev_email,
         :subject => 'Boutique Error',
         :body => request.env['sinatra.error'].to_s
-      ) if Boutique.config.email
+      ) if Boutique.config.dev_email
     end
 
     post '/subscribe/:list_key' do

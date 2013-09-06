@@ -15,15 +15,14 @@ Setup a `config.ru` file and run it like any other Sinatra app:
     require 'boutique'
 
     Boutique.configure do |c|
-      c.email          'dev@mailinator.com'
+      c.dev_email      'dev@mailinator.com'
       c.stripe_api_key 'sk_test_abcdefghijklmnopqrstuvwxyz'
       c.download_dir   '/path/to/download'
       c.download_path  '/download'
-      c.db_adapter     'postgresql'
-      c.db_host        'localhost'
-      c.db_username    'root'
-      c.db_password    'secret'
-      c.db_database    'boutique'
+
+      c.db_options(adapter: 'postgresql', host: 'localhost',
+        username: 'root', password: 'secret', database: 'boutique')
+      c.email_options(via: :smtp, via_options: {host: 'smtp.example.org'})
     end
 
     Boutique.product('my-ebook') do |p|
@@ -95,14 +94,13 @@ via `rake`.
 TODO
 ====
 
-* add amazon SES integration for subscribe/confirm/unsubscribe
 * add email rendering
 * add email guard for subscribers (guard against duplicate email)
-* add SES drip email support
-* add single email blast support
-* add SES integration for purchase receipts
+* add drip email support
 * add re-usable UI for subscribe/confirmation/error
 * add action button for subscribing reward?
+* add single email blast support
+* add email integration for purchase receipts
 * switch to Stripe
 * add re-usable UI for purchase/recover/confirmation/error
 
