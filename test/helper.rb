@@ -44,6 +44,14 @@ class BoutiqueTest < MiniTest::Unit::TestCase
   end
 
   private
+  def new_list
+    Boutique.list('learn-icon') do |l|
+      l.from   'learn-icon@example.com'
+      l.emails '/path/to/emails-dir'
+    end
+    Boutique::List['learn-icon']
+  end
+
   def ebook_product
     Boutique::Product.new(
       :code => 'ebook',

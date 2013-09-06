@@ -60,13 +60,4 @@ class ModelTest < BoutiqueTest
     refute(subscriber.valid?)
     refute_empty(subscriber.errors[:email])
   end
-
-  private
-  def new_list
-    Boutique.list('learn-icon') do |l|
-      l.from   'learn-icon@example.com'
-      l.emails '/path/to/emails-dir'
-    end
-    Boutique::List['learn-icon']
-  end
 end

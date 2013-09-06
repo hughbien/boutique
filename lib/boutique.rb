@@ -154,5 +154,12 @@ module Boutique
         :body => request.env['sinatra.error'].to_s
       ) if Boutique.config.email
     end
+
+    post '/subscribe/:list_key' do
+      Subscriber.create(
+        list_key: params[:list_key],
+        email: params[:email])
+      ''
+    end
   end
 end

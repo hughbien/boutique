@@ -95,7 +95,7 @@ via `rake`.
 TODO
 ====
 
-* add subscribe/confirm/unsubscribe actions
+* add confirm/unsubscribe actions
 * add amazon SES integration for subscribe/confirm/unsubscribe
 * add email rendering
 * add email guard for subscribers (guard against duplicate email)
@@ -103,6 +103,7 @@ TODO
 * add single email blast support
 * add SES integration for purchase receipts
 * add re-usable UI for subscribe/confirmation/error
+* add action button for subscribing reward?
 * switch to Stripe
 * add re-usable UI for purchase/recover/confirmation/error
 
