@@ -95,16 +95,17 @@ via `rake`.
 TODO
 ====
 
-* switch to Stripe
-* add List and Subscriber models
-* add subscribe/opt-in/unsubscribe actions
-* add amazon SES integration for subscribe/opt-in/unsubscribe
+* add subscriber unique email per list guard
+* add subscribe/confirm/unsubscribe actions
+* add amazon SES integration for subscribe/confirm/unsubscribe
+* add email rendering
+* add email guard for subscribers (guard against duplicate email)
 * add SES drip email support
 * add single email blast support
 * add SES integration for purchase receipts
-* add re-usable UI for purchase/recover/confirmation/error
 * add re-usable UI for subscribe/confirmation/error
-* add --download for local browse
+* switch to Stripe
+* add re-usable UI for purchase/recover/confirmation/error
 
 License
 =======

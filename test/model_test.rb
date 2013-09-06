@@ -17,7 +17,7 @@ class ModelTest < BoutiqueTest
     assert_equal('support@zincmade.com', set.from)
   end
 
-  def test_list
+  def test_list_subscriber
     Boutique.list('learn-icon') do |l|
       l.from   'learn-icon@example.com'
       l.emails '/path/to/emails-dir'
@@ -27,5 +27,13 @@ class ModelTest < BoutiqueTest
     assert_equal('learn-icon', list.key)
     assert_equal('learn-icon@example.com', list.from)
     assert_equal('/path/to/emails-dir', list.emails)
+
+    subscriber = Boutique::Subscriber.new(
+      list_key: 'learn-icon',
+      email: 'john@mailinator.com')
+    subscriber.save
+    refute(subscriber.confirmed?)
+    assert_equal(1, list.subscribers.count)
+    assert_equal(subscriber, list.subscribers.first)
   end
 end

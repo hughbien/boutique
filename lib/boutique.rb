@@ -43,7 +43,7 @@ module Boutique
     def self.included(base)
       base.extend(ClassMethods)
       base.attr_resource :key
-      base.instance_variable_set("@db".to_sym, {})
+      base.reset_db
     end
 
     module ClassMethods
@@ -55,6 +55,10 @@ module Boutique
             instance_variable_get("@#{name}".to_sym)
           end
         end
+      end
+
+      def reset_db
+        @db = {}
       end
 
       def [](key)
@@ -93,6 +97,10 @@ module Boutique
   class List
     include MemoryResource
     attr_resource :from, :emails
+
+    def subscribers
+      Subscriber.all(list_key: self.key)
+    end
   end
 
   class Purchase
@@ -108,6 +116,16 @@ module Boutique
     property :name, String
     property :completed_at, DateTime
     property :downloads, CommaSeparatedList
+  end
+
+  class Subscriber
+    include DataMapper::Resource
+
+    property :id, Serial
+    property :list_key, String, required: true
+    property :created_at, DateTime
+    property :confirmed, Boolean
+    property :email, String
   end
 
   DataMapper.finalize

@@ -22,6 +22,9 @@ end
 class BoutiqueTest < MiniTest::Unit::TestCase
   def setup
     Boutique::Purchase.all.destroy
+    Boutique::Subscriber.all.destroy
+    Boutique::List.reset_db
+    Boutique::Product.reset_db
     Boutique.configure(false) do |c|
       c.email          'dev@localhost'
       c.stripe_api_key 'sk_test_abcdefghijklmnopqrstuvwxyz'
