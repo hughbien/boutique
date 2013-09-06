@@ -133,11 +133,23 @@ module Boutique
     property :id, Serial
     property :list_key, String, required: true, unique_index: :list_key_email
     property :email, String, required: true, unique_index: :list_key_email, format: :email_address
+    property :secret, String, required: true
     property :created_at, DateTime
     property :confirmed, Boolean
 
     validates_within :list_key, set: List
     validates_uniqueness_of :email, scope: :list_key
+
+    before :valid?, :generate_secret
+
+    def generate_secret
+      self.secret ||= Digest::SHA1.hexdigest("#{rand(1000)}-#{Time.now}")[0..6]
+    end
+
+    def confirm!(secret)
+      self.confirmed = true if self.secret == secret
+      self.save
+    end
   end
 
   DataMapper.finalize
@@ -160,6 +172,11 @@ module Boutique
         list_key: params[:list_key],
         email: params[:email])
       ''
+    end
+
+    post '/subscribe/:list_key/:id/:secret' do
+      subscriber = Subscriber.first(id: params[:id], list_key: params[:list_key])
+      subscriber.confirm!(params[:secret])
     end
   end
 end

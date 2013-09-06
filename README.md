@@ -95,7 +95,7 @@ via `rake`.
 TODO
 ====
 
-* add confirm/unsubscribe actions
+* add unsubscribe action
 * add amazon SES integration for subscribe/confirm/unsubscribe
 * add email rendering
 * add email guard for subscribers (guard against duplicate email)

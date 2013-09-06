@@ -31,6 +31,7 @@ class ModelTest < BoutiqueTest
       email: 'john@mailinator.com')
     subscriber.save
     refute(subscriber.confirmed?)
+    refute_nil(subscriber.secret)
     assert_equal(1, list.subscribers.count)
     assert_equal(subscriber, list.subscribers.first)
   end
