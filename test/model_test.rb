@@ -17,17 +17,15 @@ class ModelTest < BoutiqueTest
     assert_equal('support@zincmade.com', set.from)
   end
 
-  def test_list_subscriber
-    Boutique.list('learn-icon') do |l|
-      l.from   'learn-icon@example.com'
-      l.emails '/path/to/emails-dir'
-    end
-
-    list = Boutique::List['learn-icon']
+  def test_list
+    list = new_list
     assert_equal('learn-icon', list.key)
     assert_equal('learn-icon@example.com', list.from)
     assert_equal('/path/to/emails-dir', list.emails)
+  end
 
+  def test_subscriber
+    list = new_list
     subscriber = Boutique::Subscriber.new(
       list_key: 'learn-icon',
       email: 'john@mailinator.com')
@@ -35,5 +33,40 @@ class ModelTest < BoutiqueTest
     refute(subscriber.confirmed?)
     assert_equal(1, list.subscribers.count)
     assert_equal(subscriber, list.subscribers.first)
+  end
+
+  def test_subscriber_email_validation
+    list =  new_list
+    subscriber = Boutique::Subscriber.new(
+      list_key: 'learn-icon',
+      email: 'invalid-email')
+    refute(subscriber.valid?)
+    refute_empty(subscriber.errors[:email])
+  end
+
+  def test_subscriber_list_key_validation
+    subscriber = Boutique::Subscriber.new(
+      list_key: 'invalid-list-key',
+      email: 'john@mailinator.com')
+    refute(subscriber.valid?)
+    refute_empty(subscriber.errors[:list_key])
+  end
+
+  def test_subscriber_list_email_unique
+    list = new_list
+    attrs = {list_key: list.key, email: 'john@mailinator.com'}
+    Boutique::Subscriber.create(attrs)
+    subscriber = Boutique::Subscriber.new(attrs)
+    refute(subscriber.valid?)
+    refute_empty(subscriber.errors[:email])
+  end
+
+  private
+  def new_list
+    Boutique.list('learn-icon') do |l|
+      l.from   'learn-icon@example.com'
+      l.emails '/path/to/emails-dir'
+    end
+    Boutique::List['learn-icon']
   end
 end

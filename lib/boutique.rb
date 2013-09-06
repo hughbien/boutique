@@ -3,6 +3,7 @@ require 'sinatra/base'
 require 'dm-core'
 require 'dm-types'
 require 'dm-timestamps'
+require 'dm-validations'
 require 'date'
 require 'digest/sha1'
 require 'json'
@@ -68,6 +69,14 @@ module Boutique
       def []=(key, value)
         @db[key] = value
       end
+
+      def include?(key)
+        self.to_a.include?(key)
+      end
+
+      def to_a
+        @db.keys
+      end
     end
 
     def initialize(key)
@@ -113,7 +122,7 @@ module Boutique
     property :secret, String, required: true
     property :transaction_id, String
     property :email, String
-    property :name, String
+    property :name, String, format: :email_address
     property :completed_at, DateTime
     property :downloads, CommaSeparatedList
   end
@@ -122,10 +131,13 @@ module Boutique
     include DataMapper::Resource
 
     property :id, Serial
-    property :list_key, String, required: true
+    property :list_key, String, required: true, unique_index: :list_key_email
+    property :email, String, required: true, unique_index: :list_key_email, format: :email_address
     property :created_at, DateTime
     property :confirmed, Boolean
-    property :email, String
+
+    validates_within :list_key, set: List
+    validates_uniqueness_of :email, scope: :list_key
   end
 
   DataMapper.finalize
