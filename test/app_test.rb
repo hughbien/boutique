@@ -17,10 +17,21 @@ class AppTest < BoutiqueTest
     subscriber = Boutique::Subscriber.create(
       list_key: list.key, email: 'john@mailinator.com')
     refute(subscriber.confirmed?)
-    post "/subscribe/#{list.key}/#{subscriber.id}/#{subscriber.secret}"
+    get "/subscribe/#{list.key}/#{subscriber.id}/#{subscriber.secret}"
     assert(last_response.ok?)
     subscriber = Boutique::Subscriber.get(subscriber.id)
     assert(subscriber.confirmed?)
+  end
+
+  def test_unsubscribe
+    list = new_list
+    subscriber = Boutique::Subscriber.create(
+      list_key: list.key, email: 'john@mailinator.com', confirmed: true)
+    assert(subscriber.confirmed?)
+    get "/unsubscribe/#{list.key}/#{subscriber.id}/#{subscriber.secret}"
+    assert(last_response.ok?)
+    subscriber = Boutique::Subscriber.get(subscriber.id)
+    refute(subscriber.confirmed?)
   end
 
   private

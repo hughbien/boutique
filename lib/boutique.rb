@@ -150,6 +150,11 @@ module Boutique
       self.confirmed = true if self.secret == secret
       self.save
     end
+
+    def unconfirm!(secret)
+      self.confirmed = false if self.secret == secret
+      self.save
+    end
   end
 
   DataMapper.finalize
@@ -174,9 +179,16 @@ module Boutique
       ''
     end
 
-    post '/subscribe/:list_key/:id/:secret' do
+    get '/subscribe/:list_key/:id/:secret' do
       subscriber = Subscriber.first(id: params[:id], list_key: params[:list_key])
       subscriber.confirm!(params[:secret])
+      ''
+    end
+
+    get '/unsubscribe/:list_key/:id/:secret' do
+      subscriber = Subscriber.first(id: params[:id], list_key: params[:list_key])
+      subscriber.unconfirm!(params[:secret])
+      ''
     end
   end
 end
