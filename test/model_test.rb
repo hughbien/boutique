@@ -21,7 +21,7 @@ class ModelTest < BoutiqueTest
     list = new_list
     assert_equal('learn-icon', list.key)
     assert_equal('learn-icon@example.com', list.from)
-    assert_equal('/path/to/emails-dir', list.emails)
+    assert_equal(File.expand_path('../emails', File.dirname(__FILE__)), list.emails)
   end
 
   def test_subscriber

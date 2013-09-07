@@ -13,8 +13,13 @@ Gem::Specification.new do |s|
   s.add_dependency 'sinatra'
   s.add_dependency 'data_mapper'
   s.add_dependency 'pony'
+  s.add_dependency 'tilt'
+  s.add_dependency 'preamble'
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'shotgun'
+  s.add_development_dependency 'rack-test'
+  s.add_development_dependency 'dm-sqlite-adapter'
+  s.add_development_dependency 'redcarpet'
  
   s.files         = Dir.glob('*.{md,rb,ru}') +
                     %w(boutique) +

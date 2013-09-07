@@ -1,8 +1,7 @@
 Description
 ===========
 
-Boutique is a Sinatra app for selling digital goods and running drip mailing
-lists.
+Boutique is a Sinatra app for selling digital goods and drip email campaigns.
 
 Installation
 ============
@@ -32,8 +31,8 @@ Setup a `config.ru` file and run it like any other Sinatra app:
     end
 
     Boutique.list('learn-ruby') do |l|
-      l.from       'Hugh <hugh@mailinator.com>'
-      l.emails     '/path/to/emails-dir'
+      l.from   'Hugh <hugh@mailinator.com>'
+      l.emails '/path/to/emails-dir'
     end
 
     run Boutique::App if !ENV['BOUTIQUE_CMD']
@@ -47,44 +46,6 @@ credentials):
 
     $ boutique --migrate
 
-Generate a JavaScript file and include it in your project:
-
-    $ boutique --javascript > boutique.js
-
-On your front-end, to trigger the modal:
-
-    $("#product-buy-button").click(function(e) {
-      e.preventDefault();
-      Boutique.product('my-ebook', {
-        name: "My Ebook",
-        desc: "Get the ebook now",
-        button: "Purchase Now"
-      });
-    });
-
-    $("#email-subscribe-button").click(function(e) {
-      e.preventDefault();
-      Boutique.list('learn-ruby', {
-        name: "Learn Ruby Email Course",
-        desc: "Get a weekly email about learning Ruby.",
-        button: "Subscribe Now"
-      });
-    });
-
-The modal is dynamically constructed, so feel free to A/B test the copy used
-for headlines and call to actions.
-
-Usage
-=====
-
-The web application is for customers, to get information about your products use
-the included command line application.
-
-    $ boutique --stats my-ebook
-    $ boutique --expire
-    $ boutique --expire id
-    $ boutique --delete id
-
 Development
 ===========
 
@@ -94,15 +55,14 @@ via `rake`.
 TODO
 ====
 
-* add email rendering
-* add email guard for subscribers (guard against duplicate email)
 * add drip email support
-* add re-usable UI for subscribe/confirmation/error
-* add action button for subscribing reward?
+* add email guard against duplicate emails
+* add re-usable UI for email subscription, confirmation, unsubscribe
+* add ability to customize CSS of UI
 * add single email blast support
-* add email integration for purchase receipts
 * switch to Stripe
-* add re-usable UI for purchase/recover/confirmation/error
+* add customizable email integration for purchase receipts + recover
+* add re-usable UI for purchasing, downloading, recover
 
 License
 =======

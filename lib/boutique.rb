@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'bundler/setup'
 require 'sinatra/base'
 require 'dm-core'
 require 'dm-types'
@@ -9,6 +10,10 @@ require 'digest/sha1'
 require 'json'
 require 'openssl'
 require 'pony'
+require 'preamble'
+require 'tilt'
+require 'redcarpet'
+require 'tempfile'
 
 DataMapper::Model.raise_on_save_failure = true
 
@@ -77,6 +82,34 @@ module Boutique
     def initialize(key)
       @key = key
       self.class[key] = self
+    end
+  end
+
+  class Emailer
+    def initialize(directory)
+      @directory = directory
+    end
+
+    def render(path, locals = {})
+      path = full_path(path)
+      raise "File not found: #{path}" if !File.exist?(path)
+
+      yaml, body = Preamble.load(path)
+      templates_for(path).each do |template|
+        blk = proc { body }
+        body = template.new(path, &blk).render(self, locals)
+      end
+      body
+    end
+
+    private
+    def full_path(path)
+      File.join(@directory, path)
+    end
+
+    def templates_for(path)
+      basename = File.basename(path)
+      basename.split('.')[1..-1].reverse.map { |ext| Tilt[ext] }
     end
   end
 

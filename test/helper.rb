@@ -19,7 +19,7 @@ module Pony
   end
 end
 
-class BoutiqueTest < MiniTest::Unit::TestCase
+class BoutiqueTest < MiniTest::Test
   def setup
     Boutique::Purchase.all.destroy
     Boutique::Subscriber.all.destroy
@@ -48,7 +48,7 @@ class BoutiqueTest < MiniTest::Unit::TestCase
   def new_list
     Boutique.list('learn-icon') do |l|
       l.from   'learn-icon@example.com'
-      l.emails '/path/to/emails-dir'
+      l.emails File.expand_path('../emails', File.dirname(__FILE__))
     end
     Boutique::List['learn-icon']
   end
