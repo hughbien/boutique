@@ -12,7 +12,6 @@ require 'openssl'
 require 'pony'
 require 'preamble'
 require 'tilt'
-require 'redcarpet'
 require 'tempfile'
 
 DataMapper::Model.raise_on_save_failure = true

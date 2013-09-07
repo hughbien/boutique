@@ -1,4 +1,5 @@
 require File.expand_path('helper', File.dirname(__FILE__))
+require 'redcarpet'
 
 class EmailTest < BoutiqueTest
   def test_render
