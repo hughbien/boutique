@@ -61,4 +61,16 @@ class ModelTest < BoutiqueTest
     refute(subscriber.valid?)
     refute_empty(subscriber.errors[:email])
   end
+
+  def test_email_unique
+    list = new_list
+    sub = Boutique::Subscriber.create(list_key: list.key, email: 'john@mailinator.com')
+    Boutique::Email.create(email_key: 'first', subscriber: sub)
+    email = Boutique::Email.new(email_key: 'first', subscriber: sub)
+    refute(email.valid?)
+    refute_empty(email.errors[:email_key])
+    sub2 = Boutique::Subscriber.create(list_key: list.key, email: 'jane@mailinator.com')
+    email = Boutique::Email.new(email_key: 'first', subscriber: sub2)
+    assert(email.valid?)
+  end
 end

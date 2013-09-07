@@ -55,13 +55,13 @@ via `rake`.
 TODO
 ====
 
+* add confirm/unsubscribe url as locals
 * add drip email support
-* add email guard against duplicate emails
+* add customizable? email integration for subscription with link to confirm
 * add re-usable UI for email subscription, confirmation, unsubscribe
 * add ability to customize CSS of UI
-* add single email blast support
 * switch to Stripe
-* add customizable email integration for purchase receipts + recover
+* add customizable? email integration for purchase receipts + recover
 * add re-usable UI for purchasing, downloading, recover
 
 License

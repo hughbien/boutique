@@ -85,11 +85,11 @@ module Boutique
   end
 
   class Emailer
-    def initialize(directory)
-      @directory = directory
+    def initialize(list)
+      @list = list
     end
 
-    def render(path, locals = {})
+    def render(path, locals = {}, preamble = false)
       path = full_path(path)
       raise "File not found: #{path}" if !File.exist?(path)
 
@@ -98,12 +98,23 @@ module Boutique
         blk = proc { body }
         body = template.new(path, &blk).render(self, locals)
       end
-      body
+
+      preamble ? [yaml, body] : body
+    end
+
+    def send(path, locals = {})
+      @list.subscribers.all(confirmed: true).each do |subscriber|
+        yaml, body = self.render(path, locals, true)
+        Pony.mail(
+          :to => subscriber.email,
+          :subject => yaml['subject'],
+          :body => body)
+      end
     end
 
     private
     def full_path(path)
-      File.join(@directory, path)
+      File.join(@list.emails, path)
     end
 
     def templates_for(path)
@@ -165,6 +176,7 @@ module Boutique
     validates_uniqueness_of :email, scope: :list_key
 
     before :valid?, :generate_secret
+    has n, :emails
 
     def generate_secret
       self.secret ||= Digest::SHA1.hexdigest("#{rand(1000)}-#{Time.now}")[0..6]
@@ -179,6 +191,19 @@ module Boutique
       self.confirmed = false if self.secret == secret
       self.save
     end
+  end
+
+  class Email
+    include DataMapper::Resource
+
+    property :id, Serial
+    property :email_key, String, required: true, unique_index: :subscriber_email_key
+    property :created_at, DateTime
+
+    validates_uniqueness_of :email_key, scope: :subscriber
+    validates_presence_of :subscriber
+
+    belongs_to :subscriber
   end
 
   DataMapper.finalize
