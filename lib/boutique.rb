@@ -106,11 +106,17 @@ module Boutique
 
     def send(path, locals = {})
       @list.subscribers.all(confirmed: true).each do |subscriber|
+        locals = locals.merge(
+          subscribe_url: @list.subscribe_url,
+          confirm_url: subscriber.confirm_url,
+          unsubscribe_url: subscriber.unsubscribe_url)
         yaml, body = self.render(path, locals, true)
         Pony.mail(
-          :to => subscriber.email,
-          :subject => yaml['subject'],
-          :body => body)
+          to: subscriber.email,
+          from: @list.from,
+          subject: yaml['subject'],
+          headers: {'Content-Type' => 'text/html'},
+          body: body)
       end
     end
 
