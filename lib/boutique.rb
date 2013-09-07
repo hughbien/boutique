@@ -199,7 +199,7 @@ module Boutique
     end
 
     def confirm_url
-      secret_url("subscribe")
+      secret_url("confirm")
     end
 
     def unsubscribe_url
@@ -250,7 +250,7 @@ module Boutique
       ''
     end
 
-    post '/subscribe/:list_key/:id/:secret' do
+    post '/confirm/:list_key/:id/:secret' do
       subscriber = Subscriber.first(id: params[:id], list_key: params[:list_key])
       subscriber.confirm!(params[:secret])
       ''

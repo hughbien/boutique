@@ -12,12 +12,12 @@ class AppTest < BoutiqueTest
     refute(subscriber.confirmed?)
   end
 
-  def test_subscribe_confirmation
+  def test_confirm
     list = new_list
     subscriber = Boutique::Subscriber.create(
       list_key: list.key, email: 'john@mailinator.com')
     refute(subscriber.confirmed?)
-    post "/subscribe/#{list.key}/#{subscriber.id}/#{subscriber.secret}"
+    post "/confirm/#{list.key}/#{subscriber.id}/#{subscriber.secret}"
     assert(last_response.ok?)
     subscriber = Boutique::Subscriber.get(subscriber.id)
     assert(subscriber.confirmed?)

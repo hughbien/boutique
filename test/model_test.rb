@@ -38,7 +38,7 @@ class ModelTest < BoutiqueTest
 
     id, secret = subscriber.id, subscriber.secret
     assert_equal(
-      "http://example.com?boutique=subscribe/learn-icon/#{id}/#{secret}",
+      "http://example.com?boutique=confirm/learn-icon/#{id}/#{secret}",
       subscriber.confirm_url)
     assert_equal(
       "http://example.com?boutique=unsubscribe/learn-icon/#{id}/#{secret}",
