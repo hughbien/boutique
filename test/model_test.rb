@@ -21,6 +21,7 @@ class ModelTest < BoutiqueTest
     list = new_list
     assert_equal('learn-icon', list.key)
     assert_equal('learn-icon@example.com', list.from)
+    assert_equal('http://example.com', list.url)
     assert_equal(File.expand_path('../emails', File.dirname(__FILE__)), list.emails)
   end
 
@@ -34,6 +35,14 @@ class ModelTest < BoutiqueTest
     refute_nil(subscriber.secret)
     assert_equal(1, list.subscribers.count)
     assert_equal(subscriber, list.subscribers.first)
+
+    id, secret = subscriber.id, subscriber.secret
+    assert_equal(
+      "http://example.com?boutique=subscribe/learn-icon/#{id}/#{secret}",
+      subscriber.confirm_url)
+    assert_equal(
+      "http://example.com?boutique=unsubscribe/learn-icon/#{id}/#{secret}",
+      subscriber.unsubscribe_url)
   end
 
   def test_subscriber_email_validation

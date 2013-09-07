@@ -13,6 +13,8 @@ require 'pony'
 require 'preamble'
 require 'tilt'
 require 'tempfile'
+require 'uri'
+require 'cgi'
 
 DataMapper::Model.raise_on_save_failure = true
 
@@ -140,7 +142,7 @@ module Boutique
 
   class List
     include MemoryResource
-    attr_resource :from, :emails
+    attr_resource :from, :emails, :url
 
     def subscribers
       Subscriber.all(list_key: self.key)
@@ -182,6 +184,10 @@ module Boutique
       self.secret ||= Digest::SHA1.hexdigest("#{rand(1000)}-#{Time.now}")[0..6]
     end
 
+    def list
+      @list ||= List[self.list_key]
+    end
+
     def confirm!(secret)
       self.confirmed = true if self.secret == secret
       self.save
@@ -190,6 +196,23 @@ module Boutique
     def unconfirm!(secret)
       self.confirmed = false if self.secret == secret
       self.save
+    end
+
+    def confirm_url
+      secret_url("subscribe")
+    end
+
+    def unsubscribe_url
+      secret_url("unsubscribe")
+    end
+
+    private
+    def secret_url(action)
+      url = URI.parse(self.list.url)
+      params = [url.query]
+      params << "boutique=#{action}/#{CGI.escape(self.list_key)}/#{self.id}/#{self.secret}"
+      url.query = params.compact.join('&')
+      url.to_s
     end
   end
 

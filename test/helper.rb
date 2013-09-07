@@ -49,6 +49,7 @@ class BoutiqueTest < MiniTest::Test
     Boutique.list('learn-icon') do |l|
       l.from   'learn-icon@example.com'
       l.emails File.expand_path('../emails', File.dirname(__FILE__))
+      l.url    'http://example.com'
     end
     Boutique::List['learn-icon']
   end
