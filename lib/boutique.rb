@@ -227,13 +227,13 @@ module Boutique
       ''
     end
 
-    get '/subscribe/:list_key/:id/:secret' do
+    post '/subscribe/:list_key/:id/:secret' do
       subscriber = Subscriber.first(id: params[:id], list_key: params[:list_key])
       subscriber.confirm!(params[:secret])
       ''
     end
 
-    get '/unsubscribe/:list_key/:id/:secret' do
+    post '/unsubscribe/:list_key/:id/:secret' do
       subscriber = Subscriber.first(id: params[:id], list_key: params[:list_key])
       subscriber.unconfirm!(params[:secret])
       ''
