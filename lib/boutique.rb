@@ -147,6 +147,14 @@ module Boutique
     def subscribers
       Subscriber.all(list_key: self.key)
     end
+
+    def subscribe_url
+      url = URI.parse(self.url)
+      params = [url.query]
+      params << "boutique=subscribe/#{CGI.escape(self.key)}"
+      url.query = params.compact.join('&')
+      url.to_s
+    end
   end
 
   class Purchase

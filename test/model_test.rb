@@ -23,6 +23,7 @@ class ModelTest < BoutiqueTest
     assert_equal('learn-icon@example.com', list.from)
     assert_equal('http://example.com', list.url)
     assert_equal(File.expand_path('../emails', File.dirname(__FILE__)), list.emails)
+    assert_equal("http://example.com?boutique=subscribe/learn-icon", list.subscribe_url)
   end
 
   def test_subscriber
