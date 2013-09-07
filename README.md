@@ -56,7 +56,6 @@ via `rake`.
 TODO
 ====
 
-* add Pony.mail dev/test environment for debugging
 * add drip email support
 * add customizable? email integration for subscription with link to confirm
 * add re-usable UI for email subscription, confirmation, unsubscribe
