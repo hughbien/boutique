@@ -36,6 +36,8 @@ class ModelTest < BoutiqueTest
     refute_nil(subscriber.secret)
     assert_equal(1, list.subscribers.count)
     assert_equal(subscriber, list.subscribers.first)
+    assert_equal(0, subscriber.drip_day)
+    assert_equal(Date.today, subscriber.drip_on)
 
     id, secret = subscriber.id, subscriber.secret
     assert_equal(

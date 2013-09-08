@@ -56,7 +56,6 @@ via `rake`.
 TODO
 ====
 
-* add drip email support
 * add first customizable email w/ subscription link support
 * add re-usable UI for email subscription, confirmation, unsubscribe
 * allow duplicate emails for initial subscription email

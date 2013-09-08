@@ -104,12 +104,13 @@ module Boutique
       preamble ? [yaml, body] : body
     end
 
-    def send(subscriber, path, locals = {})
+    def deliver(subscriber, path, locals = {})
       locals = locals.merge(
         subscribe_url: @list.subscribe_url,
         confirm_url: subscriber.confirm_url,
         unsubscribe_url: subscriber.unsubscribe_url)
       yaml, body = self.render(path, locals, true)
+      raise "Unconfirmed #{subscriber.email} for #{yaml['key']}" if !subscriber.confirmed?
       Email.create(email_key: yaml['key'], subscriber: subscriber)
       Pony.mail(
         to: subscriber.email,
@@ -127,18 +128,26 @@ module Boutique
       @list.subscribers.all(confirmed: true).each do |subscriber|
         # TODO: speed up by moving filter outside of loop
         if Email.first(email_key: yaml['key'], subscriber: subscriber).nil?
-          self.send(subscriber, path, locals)
+          self.deliver(subscriber, path, locals)
         end
       end
     end
 
     def drip
-      # @list.subscribers # where last_drip_on < today
-      # .each do |subscriber|
-      # subscriber.last_drip_on = today
-      # subscriber.drip_count += 1
-      # email = @emails[subscriber.drip_count]
-      # if email, self.send(email, subscriber)
+      today = Date.today
+      max_day = emails.keys.max || 0
+      subscribers = @list.subscribers.all(
+        :confirmed => true,
+        :drip_on.lt => today,
+        :drip_day.lt => max_day)
+      subscribers.each do |subscriber|
+        subscriber.drip_on = today
+        subscriber.drip_day += 1
+        subscriber.save
+        if (email_path = emails[subscriber.drip_day])
+          self.deliver(subscriber, email_path)
+        end
+      end
     end
 
     private
@@ -149,6 +158,21 @@ module Boutique
     def templates_for(path)
       basename = File.basename(path)
       basename.split('.')[1..-1].reverse.map { |ext| Tilt[ext] }
+    end
+
+    def emails
+      @emails ||= begin
+        emails = {}
+        Dir.entries(@list.emails).each do |filename|
+          next if File.directory?(filename)
+          # TODO: stop duplicating calls to Preamble, store in memory
+          yaml, body = Preamble.load(full_path(filename))
+          if yaml && yaml['day'] && yaml['key']
+            emails[yaml['day']] = filename
+          end
+        end
+        emails
+      end
     end
   end
 
@@ -206,17 +230,20 @@ module Boutique
     property :list_key, String, required: true, unique_index: :list_key_email
     property :email, String, required: true, unique_index: :list_key_email, format: :email_address
     property :secret, String, required: true
-    property :created_at, DateTime
     property :confirmed, Boolean
+    property :created_at, DateTime
+    property :drip_on, Date, required: true
+    property :drip_day, Integer, required: true, default: 0
 
     validates_within :list_key, set: List
     validates_uniqueness_of :email, scope: :list_key
 
-    before :valid?, :generate_secret
     has n, :emails
 
-    def generate_secret
+    def initialize(*args)
+      super
       self.secret ||= Digest::SHA1.hexdigest("#{rand(1000)}-#{Time.now}")[0..6]
+      self.drip_on ||= Date.today
     end
 
     def list
