@@ -56,13 +56,11 @@ via `rake`.
 TODO
 ====
 
-* filter subscribers by email already sent Email#blast
 * add drip email support
-* add customizable? email integration for subscription with link to confirm
+* add first customizable email w/ subscription link support
 * add re-usable UI for email subscription, confirmation, unsubscribe
-* add re-usable UI unsubscribe request (form to fill out email)
-* allow duplicate emails for: initial subscription email, unsubscribe email?
-* how to handle re-subscribers
+* allow duplicate emails for initial subscription email
+* handle re-subscribers
 * add ability to customize CSS of UI
 * switch to Stripe
 * add customizable? email integration for purchase receipts + recover

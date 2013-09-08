@@ -122,8 +122,13 @@ module Boutique
     end
 
     def blast(path, locals = {})
+      yaml, body = Preamble.load(full_path(path))
+      email_key = yaml['key']
       @list.subscribers.all(confirmed: true).each do |subscriber|
-        self.send(subscriber, path, locals)
+        # TODO: speed up by moving filter outside of loop
+        if Email.first(email_key: yaml['key'], subscriber: subscriber).nil?
+          self.send(subscriber, path, locals)
+        end
       end
     end
 

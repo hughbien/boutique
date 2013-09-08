@@ -29,7 +29,7 @@ class EmailerTest < BoutiqueTest
     assert_equal(1, Boutique::Email.count)
 
     Pony.mail(nil)
-    assert_raises(RuntimeError) { emailer.blast('intro.md.erb') }
+    emailer.blast('intro.md.erb')
     assert_nil(Pony.last_mail)
     assert_equal(1, Boutique::Email.count)
   end
