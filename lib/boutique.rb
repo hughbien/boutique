@@ -110,8 +110,13 @@ module Boutique
         confirm_url: subscriber.confirm_url,
         unsubscribe_url: subscriber.unsubscribe_url)
       yaml, body = self.render(path, locals, true)
-      raise "Unconfirmed #{subscriber.email} for #{yaml['key']}" if !subscriber.confirmed?
-      Email.create(email_key: yaml['key'], subscriber: subscriber)
+      if yaml['day'] == 0
+        ymd = Date.today.strftime("%Y-m-%d")
+        Email.create(email_key: "#{yaml['key']}-#{ymd}", subscriber: subscriber)
+      else
+        raise "Unconfirmed #{subscriber.email} for #{yaml['key']}" if !subscriber.confirmed?
+        Email.create(email_key: yaml['key'], subscriber: subscriber)
+      end
       Pony.mail(
         to: subscriber.email,
         from: @list.from,
@@ -120,6 +125,10 @@ module Boutique
         body: body)
     rescue DataMapper::SaveFailureError
       raise "Duplicate email #{yaml['key']} to #{subscriber.email}"
+    end
+
+    def deliver_zero(subscriber)
+      self.deliver(subscriber, emails[0])
     end
 
     def blast(path, locals = {})
@@ -306,22 +315,31 @@ module Boutique
     end
 
     post '/subscribe/:list_key' do
-      Subscriber.create(
-        list_key: params[:list_key],
+      list = get_list(params[:list_key])
+      subscriber = Subscriber.create(
+        list_key: list.key,
         email: params[:email])
+      Emailer.new(list).deliver_zero(subscriber)
       ''
     end
 
     post '/confirm/:list_key/:id/:secret' do
-      subscriber = Subscriber.first(id: params[:id], list_key: params[:list_key])
+      list = get_list(params[:list_key])
+      subscriber = Subscriber.first(id: params[:id], list_key: list.key)
       subscriber.confirm!(params[:secret])
       ''
     end
 
     post '/unsubscribe/:list_key/:id/:secret' do
-      subscriber = Subscriber.first(id: params[:id], list_key: params[:list_key])
+      list = get_list(params[:list_key])
+      subscriber = Subscriber.first(id: params[:id], list_key: list.key)
       subscriber.unconfirm!(params[:secret])
       ''
+    end
+
+    private
+    def get_list(list_key)
+      List[list_key] || halt(404)
     end
   end
 end

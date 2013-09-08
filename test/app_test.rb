@@ -8,6 +8,8 @@ class AppTest < BoutiqueTest
     post "/subscribe/#{list.key}", email: 'john@mailinator.com'
     assert(last_response.ok?)
     assert_equal(1, Boutique::Subscriber.count)
+    assert_equal(1, Boutique::Email.count)
+    refute_nil(Pony.last_mail)
     subscriber = Boutique::Subscriber.first
     refute(subscriber.confirmed?)
   end

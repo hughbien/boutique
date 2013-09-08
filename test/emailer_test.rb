@@ -16,21 +16,21 @@ class EmailerTest < BoutiqueTest
   end
 
   def test_blast
-    @emailer.blast('intro.md.erb')
+    @emailer.blast('first.md.erb')
     refute(Pony.last_mail)
     assert_equal(0, Boutique::Email.count)
 
     create_subscriber
-    @emailer.blast('intro.md.erb')
+    @emailer.blast('first.md.erb')
     mail = Pony.last_mail
     assert_equal('john@mailinator.com', mail[:to])
     assert_equal('learn-icon@example.com', mail[:from])
-    assert_equal('Welcome to Boutique', mail[:subject])
+    assert_equal('First Email', mail[:subject])
     refute_nil(mail[:body])
     assert_equal(1, Boutique::Email.count)
 
     Pony.mail(nil)
-    @emailer.blast('intro.md.erb')
+    @emailer.blast('first.md.erb')
     assert_nil(Pony.last_mail)
     assert_equal(1, Boutique::Email.count)
   end
