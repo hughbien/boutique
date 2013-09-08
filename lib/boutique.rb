@@ -104,20 +104,36 @@ module Boutique
       preamble ? [yaml, body] : body
     end
 
-    def send(path, locals = {})
+    def send(subscriber, path, locals = {})
+      locals = locals.merge(
+        subscribe_url: @list.subscribe_url,
+        confirm_url: subscriber.confirm_url,
+        unsubscribe_url: subscriber.unsubscribe_url)
+      yaml, body = self.render(path, locals, true)
+      Email.create(email_key: yaml['key'], subscriber: subscriber)
+      Pony.mail(
+        to: subscriber.email,
+        from: @list.from,
+        subject: yaml['subject'],
+        headers: {'Content-Type' => 'text/html'},
+        body: body)
+    rescue DataMapper::SaveFailureError
+      raise "Duplicate email #{yaml['key']} to #{subscriber.email}"
+    end
+
+    def blast(path, locals = {})
       @list.subscribers.all(confirmed: true).each do |subscriber|
-        locals = locals.merge(
-          subscribe_url: @list.subscribe_url,
-          confirm_url: subscriber.confirm_url,
-          unsubscribe_url: subscriber.unsubscribe_url)
-        yaml, body = self.render(path, locals, true)
-        Pony.mail(
-          to: subscriber.email,
-          from: @list.from,
-          subject: yaml['subject'],
-          headers: {'Content-Type' => 'text/html'},
-          body: body)
+        self.send(subscriber, path, locals)
       end
+    end
+
+    def drip
+      # @list.subscribers # where last_drip_on < today
+      # .each do |subscriber|
+      # subscriber.last_drip_on = today
+      # subscriber.drip_count += 1
+      # email = @emails[subscriber.drip_count]
+      # if email, self.send(email, subscriber)
     end
 
     private

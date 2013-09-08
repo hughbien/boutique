@@ -23,6 +23,7 @@ class BoutiqueTest < MiniTest::Test
   def setup
     Boutique::Purchase.all.destroy
     Boutique::Subscriber.all.destroy
+    Boutique::Email.all.destroy
     Boutique::List.reset_db
     Boutique::Product.reset_db
     Boutique.configure(false) do |c|
