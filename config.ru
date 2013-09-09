@@ -1,7 +1,7 @@
 require File.expand_path('lib/boutique', File.dirname(__FILE__))
 
-Boutique.configure(!ENV['BOUTIQUE_CMD'].nil?) do |c|
-  c.dev_email      'dev@localhost'
+Boutique.configure(ENV['BOUTIQUE_DEV'] || !ENV['BOUTIQUE_CMD'].nil?) do |c|
+  #c.dev_email      'dev@localhost'
   c.stripe_api_key 'sk_test_abcdefghijklmnopqrstuvwxyz'
   c.download_path  '/download'
   c.download_dir   File.expand_path('temp', File.dirname(__FILE__))
@@ -21,8 +21,8 @@ Boutique.product('readme') do |p|
 end
 
 Boutique.list('learn-ruby') do |l|
-  l.from   'Hugh <hugh@mailinator.com>'
-  l.emails '/path/to/emails-dir'
+  l.from   'Hugh <hugh@localhost>'
+  l.emails File.expand_path('emails', File.dirname(__FILE__))
   l.url    'http://example.com'
 end
 

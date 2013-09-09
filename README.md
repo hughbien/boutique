@@ -53,6 +53,10 @@ Development
 Tests are setup to run individually via `ruby test/*_test.rb` or run them all
 via `rake`.
 
+To start the server for local development:
+
+    $ BOUTIQUE_DEV=1 shotgun
+
 TODO
 ====
 

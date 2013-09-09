@@ -1,13 +1,15 @@
-.modal-overlay {
+.boutique {
+  display: none;
+}
+.boutique-overlay {
   position: fixed;
   width: 100%;
   height: 100%;
   left: 0;
   top: 0;
   background: rgba(0,0,0,0.5);
-  display: none;
 }
-.modal {
+.boutique-modal {
   background: #f9f9f9;
   font-size: 15px;
   width: 25em;
@@ -17,9 +19,8 @@
   left: 50%;
   margin-left: -12.5em;
   box-shadow: #333 0 2px 5px;
-  display: none;
 }
-.modal .modal-close {
+.boutique-close {
   font-family: helvetica, sans-serif;
   position: absolute;
   top: -0.7em;
@@ -34,7 +35,7 @@
   width: 1.4em;
   text-align: center;
 }
-.modal-head {
+.boutique-head {
   background: #111;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #131313), color-stop(100%, #111));
   background-image: -webkit-linear-gradient(#131313, #111);
@@ -44,42 +45,39 @@
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
   text-align: center;
-}
-.modal-head strong {
   color: #fff;
   text-shadow: #111 1px 1px 1px; 
-  display: block;
   padding: 1em 0.1em 1.1em;
   font-size: 1.5em;
   line-height: 1.3em;
 }
-.modal-body {
+.boutique-body {
   color: #333;
   padding: 2em;
 }
-.modal-body p {
+.boutique-body p {
   line-height: 1.4em;
   margin: 1.5em 0;
 }
-.modal-body p:first-child {
+.boutique-body p:first-child {
   margin-top: 0;
 }
-.modal-body p:last-child {
+.boutique-body p:last-child {
   margin-bottom: 0;
 }
-.modal-body form {
+.boutique-body form {
   margin-bottom: 0.5em;
 }
-.modal-body form label {
+.boutique-body form label {
   font-weight: bold;
 }
-.modal-body form input[type=text], .modal-body form input[type=email] {
+.boutique-body form input[type=text], .boutique-body form input[type=email] {
   border: 1px solid #ccc;
   border-radius: 2px;
   padding: 0.5em 2%;
   width: 95%;
 }
-.modal-body form input[type=submit] {
+.boutique-body form input[type=submit] {
   background: #ed3b19;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ee6949), color-stop(100%, #ed3b19));
   background-image: -webkit-linear-gradient(#ee6949, #ed3b19);
@@ -96,10 +94,10 @@
   text-align: center;
   width: 100%;
 }
-.modal-body form input[type=submit].inlined {
+.boutique-body form input[type=submit].inlined {
   margin-top: 1em;
 }
-.modal-body form input[type=submit]:hover {
+.boutique-body form input[type=submit]:hover {
   background: #fe5b3b;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ff9c7c), color-stop(100%, #fe5b3b));
   background-image: -webkit-linear-gradient(#ff9c7c, #fe5b3b);

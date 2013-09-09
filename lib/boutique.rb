@@ -111,7 +111,7 @@ module Boutique
         unsubscribe_url: subscriber.unsubscribe_url)
       yaml, body = self.render(path, locals, true)
       if yaml['day'] == 0
-        ymd = Date.today.strftime("%Y-m-%d")
+        ymd = Date.today.strftime("%Y-%m-%d")
         Email.create(email_key: "#{yaml['key']}-#{ymd}", subscriber: subscriber)
       else
         raise "Unconfirmed #{subscriber.email} for #{yaml['key']}" if !subscriber.confirmed?
@@ -291,7 +291,7 @@ module Boutique
     include DataMapper::Resource
 
     property :id, Serial
-    property :email_key, String, required: true, unique_index: :subscriber_email_key
+    property :email_key, String, required: true
     property :created_at, DateTime
 
     validates_uniqueness_of :email_key, scope: :subscriber
