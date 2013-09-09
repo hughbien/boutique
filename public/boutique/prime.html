@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Boutique Prime</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/boutique/styles.css" media="all" />
+  </head>
+  <body>
+    <div class="modal-overlay"></div>
+    <div class="modal">
+      <div class="modal-close">x</div>
+      <div class="modal-head">
+        <strong>Join The Mailing List</strong>
+      </div>
+      <div class="modal-body">
+        <p>Join our mailing list and get a free PDF guide on how to setup
+           and use the Boutique software application.</p>
+        <form>
+          <p>
+            <input type="email" placeholder="Email Address"/><br>
+            <input type="submit" value="Subscribe Now" class="inlined" />
+          </p>
+        </form>
+      </div>
+    </div>
+    <script src="/boutique/jquery.js"></script>
+    <script src="/boutique/script.js"></script>
+    <script>
+      Boutique.subscribe("learn-icon");
+    </script>
+  </body>
+</html>

@@ -20,4 +20,10 @@ Boutique.product('readme') do |p|
   p.price 1.5
 end
 
+Boutique.list('learn-ruby') do |l|
+  l.from   'Hugh <hugh@mailinator.com>'
+  l.emails '/path/to/emails-dir'
+  l.url    'http://example.com'
+end
+
 run Boutique::App if !ENV['BOUTIQUE_CMD']
