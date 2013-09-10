@@ -1,39 +1,51 @@
 var Boutique = {
   URL: "/boutique/",
+  lists: {},
   subscribe: function(key) {
-    var modal = this.buildModal({
-      id: "testing",
-      head: "Join The Mailing List",
-      body: this.buildSubscribeForm(key) });
+    var modal = this.buildModal(key);
     modal.show();
+    return modal;
   },
-  init: function() {
+  list: function(key, configs) {
+    this.lists[key] = configs;
   },
-  buildModal: function(options) {
-    options = options || {};
+  buildModal: function(key) {
+    var modal = $("#boutique-list-" + key);
+    if (modal.length) { return modal; }
+
     var html = "";
-    html += '<div class="boutique">';
+    html += '<div class="boutique start">';
     html += '  <div class="boutique-overlay"></div>';
     html += '  <div class="boutique-modal">';
     html += '    <div class="boutique-close">x</div>';
-    html += '    <div class="boutique-head"></div>';
-    html += '    <div class="boutique-body"></div>';
     html += '  </div>';
     html += '</div>';
 
-    var modal = $(html);
+    modal = $(html);
     modal.find(".boutique-overlay,.boutique-close").click(function(e) {
       e.preventDefault();
       $(this).parents(".boutique").hide();
     });
-    if (options["id"]) { modal.attr("id", options["id"]); }
-    if (options["head"]) { modal.find(".boutique-head").html(options["head"]); }
-    if (options["body"]) { modal.find(".boutique-body").html(options["body"]); }
+    modal.attr("id", "boutique-list-" + key);
+
+    var states = ["start", "subscribed", "confirmed", "unsubscribed"];
+    for (var i = 0; i < states.length; i++) {
+      var state = states[i];
+      var head = $('<div class="boutique-head '+ state +'"></div>');
+      var body = $('<div class="boutique-body '+ state +'"></div>');
+      head.html(this.lists[key][state]["title"]);
+      body.html(this.lists[key][state]["body"]);
+      if (state == "start") {
+        body.append(this.buildSubscribeForm(key));
+      } else if (this.lists[key][state]["button"]) {
+        body.append(this.buildButton(key, state));
+      }
+      modal.find(".boutique-modal").prepend(head, body);
+    }
     $("body").append(modal);
     return modal;
   },
-  buildSubscribeForm: function(key, options) {
-    options = options || {};
+  buildSubscribeForm: function(key) {
     var html = "";
     html += '<form>';
     html += '  <p>';
@@ -41,17 +53,40 @@ var Boutique = {
     html += '    <input type="submit" value="Subscribe Now" class="inlined" />';
     html += '  </p>';
     html += '</form>';
+    var options = this.lists[key]["start"];
 
     var form = $(html);
-    if (key) { form.attr("action", Boutique.URL + "subscribe/" + key); }
-    if (options["submit"]) { form.find("input[type=submit]").val(options["submit"]); }
+    form.attr("action", Boutique.URL + "subscribe/" + key);
+    if (options["button"]) { form.find("input[type=submit]").val(options["button"]); }
     form.submit(function(e) {
       e.preventDefault();
-      $.post(form.attr("action"), form.serialize(), function(response) {
-        console.log(response);
+      form.find("input[type=submit]").
+        attr("disabled", true).
+        val("Loading...");
+      $.ajax(form.attr("action"), {
+        type: "POST",
+        data: form.serialize(),
+        error: function() {
+          form.find("input[type=submit]").
+            attr("disabled", false).
+            val(options["button"] || "Subscribe Now");
+        },
+        success: function() {
+          form.parents(".boutique").
+            removeClass("start").
+            addClass("subscribed");
+        }
       });
     });
     return form;
+  },
+  buildButton: function(key, state) {
+    var options = this.lists[key][state];
+    var button = $('<a class="boutique-button"></a>');
+    button.attr("href", options["href"]);
+    button.html(options["button"]);
+    var container = $("<p></p>");
+    container.append(button);
+    return container;
   }
 };
-Boutique.init();

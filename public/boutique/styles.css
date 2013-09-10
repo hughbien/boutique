@@ -1,5 +1,15 @@
-.boutique {
+.boutique,
+.boutique .start,
+.boutique .subscribed,
+.boutique .confirmed,
+.boutique .unsubscribed {
   display: none;
+}
+.boutique.start .start,
+.boutique.subscribed .subscribed,
+.boutique.confirmed .confirmed,
+.boutique.unsubscribed .unsubscribed {
+  display: block;
 }
 .boutique-overlay {
   position: fixed;
@@ -54,6 +64,7 @@
 .boutique-body {
   color: #333;
   padding: 2em;
+  line-height: 1.4em;
 }
 .boutique-body p {
   line-height: 1.4em;
@@ -77,7 +88,8 @@
   padding: 0.5em 2%;
   width: 95%;
 }
-.boutique-body form input[type=submit] {
+.boutique-body form input[type=submit],
+.boutique-body a.boutique-button {
   background: #ed3b19;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ee6949), color-stop(100%, #ed3b19));
   background-image: -webkit-linear-gradient(#ee6949, #ed3b19);
@@ -87,21 +99,34 @@
   box-shadow: #666 0 1px 1px;
   border: 1px solid #ed3b19;
   border-radius: 4px;
+  display: inline-block;
   color: #fff;
   font-weight: bold;
   cursor: pointer;
   padding: 0.5em 0;
   text-align: center;
+  text-decoration: none;
   width: 100%;
 }
-.boutique-body form input[type=submit].inlined {
+.boutique-body form input[type=submit].inlined,
+.boutique-body a.boutique-button.inlined {
   margin-top: 1em;
 }
-.boutique-body form input[type=submit]:hover {
+.boutique-body form input[type=submit]:hover,
+.boutique-body a.boutique-button:hover {
   background: #fe5b3b;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ff9c7c), color-stop(100%, #fe5b3b));
   background-image: -webkit-linear-gradient(#ff9c7c, #fe5b3b);
   background-image: -moz-linear-gradient(#ff9c7c, #fe5b3b);
   background-image: -o-linear-gradient(#ff9c7c, #fe5b3b);
   background-image: linear-gradient(#ff9c7c, #fe5b3b);
+}
+.boutique-body form input[type=submit][disabled],
+.boutique-body form input[type=submit][disabled]:hover,
+.boutique-body a.boutique-button[disabled],
+.boutique-body a.boutique-button[disabled]:hover {
+  box-shadow: none;
+  border: 1px solid #777;
+  background: #777;
+  cursor: default;
 }

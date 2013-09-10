@@ -10,6 +10,29 @@
     <script src="/boutique/script.js"></script>
     <script>
       Boutique.URL = '/';
+      Boutique.list("learn-ruby", {
+        start: {
+          title: "Join The Mailing List",
+          body: "<p>Join the mailing list and get a free PDF!</p>",
+          button: "Subscribe Now"
+        },
+        subscribed: {
+          title: "Thanks for Subscribing!",
+          body: "<p>An email confirmation has been sent to your inbox.  Please click the confirm link.</p>",
+          button: "Download Free PDF",
+          href: "http://example.com"
+        },
+        confirmed: {
+          title: "You've been added!",
+          body: "<p>You'll start receiving emails every few days.  Please enjoy this free PDF resource.</p>",
+          button: "Download Free PDF",
+          href: "http://example.com"
+        },
+        unsubscribed: {
+          title: "You've been removed!",
+          body: "We're sorry to see you go!"
+        }
+      });
       Boutique.subscribe("learn-ruby");
     </script>
   </body>
