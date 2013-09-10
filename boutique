@@ -9,6 +9,18 @@ ENV['BOUTIQUE_CMD'] = '1'
 
 module Boutique
   class Command
+    JS_FILE = File.join(File.dirname(__FILE__), 'public/boutique/script.js')
+    CSS_FILE = File.join(File.dirname(__FILE__), 'public/boutique/styles.css')
+
+    def self.assets
+      File.exist?('boutique.js') ?
+        puts("exists -- boutique.js") :
+        FileUtils.copy(JS_FILE, "boutique.js") || puts("   new -- boutique.js")
+      File.exist?('boutique.css') ?
+        puts("exists -- boutique.css") :
+        FileUtils.copy(CSS_FILE, "boutique.css") || puts("   new -- boutique.css")
+    end
+
     def self.drip
       load_config
       Boutique::List.to_a.each do |list_key|
@@ -36,6 +48,7 @@ ARGV.options do |o|
   o.set_summary_indent('  ')
   o.banner =    "Usage: #{File.basename($0)} [OPTION]"
   o.define_head "Admin for boutique"
+  o.on('-a', '--assets', 'create css/js assets') { Boutique::Command.assets; exit }
   o.on('-d', '--drip', 'drip out emails') { Boutique::Command.drip; exit }
   o.on('-m', '--migrate', 'initial migration') { Boutique::Command.migrate; exit }
   o.on('-h', '--help', 'show this help message') { puts o; exit }
