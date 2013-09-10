@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/boutique/styles.css" media="all" />
   </head>
   <body>
+    <a href="#subscribe" id="subscribe-link">Subscribe Now</a>
     <script src="/boutique/jquery.js"></script>
     <script src="/boutique/script.js"></script>
     <script>
@@ -33,7 +34,10 @@
           body: "We're sorry to see you go!"
         }
       });
-      Boutique.subscribe("learn-ruby");
+      $("#subscribe-link").click(function(e) {
+        e.preventDefault();
+        Boutique.subscribe("learn-ruby");
+      });
     </script>
   </body>
 </html>

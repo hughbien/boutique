@@ -4,6 +4,9 @@ var Boutique = {
   subscribe: function(key) {
     var modal = this.buildModal(key);
     modal.show();
+    if (modal.hasClass("unsubscribed")) {
+      modal.removeClass("unsubscribed").addClass("start");
+    }
     return modal;
   },
   list: function(key, configs) {
