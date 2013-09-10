@@ -19,7 +19,7 @@ require 'cgi'
 DataMapper::Model.raise_on_save_failure = true
 
 module Boutique
-  VERSION = '0.0.9'
+  VERSION = '0.0.10'
 
   class << self
     def configure(setup_db=true)
