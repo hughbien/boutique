@@ -1,0 +1,10 @@
+---
+---
+<%
+  def url(id)
+    {
+      example: 'http://example.com',
+      google: 'http://google.com'
+    }[id.to_sym] || raise("")
+  end
+%>

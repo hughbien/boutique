@@ -4,9 +4,13 @@ subject: Welcome to Boutique
 key: intro
 ---
 
+<% render('_urls.erb') %>
+
 Hi,
 
 Thanks for subscribing!  To confirm your subscription, please
 [click here](<%= confirm_url %>).
+
+[Example URL](<%= url(:example) %>)
 
 <%= render('_footer.md.erb', unsubscribe_url: unsubscribe_url) %>
