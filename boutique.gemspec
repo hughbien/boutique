@@ -5,9 +5,9 @@ Gem::Specification.new do |s|
   s.authors     = ['Hugh Bien']
   s.email       = ['hugh@hughbien.com']
   s.homepage    = 'https://github.com/hughbien/boutique'
-  s.summary     = 'Sinatra module for selling digital goods'
-  s.description = 'A Sinatra module which accepts payments via PayPal and gives ' +
-                  'customers a secret URL to download your product.'
+  s.summary     = 'Sinatra app product checkouts and drip emails'
+  s.description = 'A Sinatra app that adds product checkouts and drip emails support' +
+                  ' to any websites (both UI + backend).'
  
   s.required_rubygems_version = '>= 1.3.6'
   s.add_dependency 'sinatra'
