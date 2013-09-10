@@ -18,7 +18,9 @@ var Boutique = {
       var pKey = params[1];
       var pId = params[2];
       var pSecret = params[3];
-      if (key == pKey && (pAction == "confirm" || pAction == "unsubscribe")) {
+      if (key == pKey && pAction == "subscribe") {
+        Boutique.subscribe(key);
+      } else if (key == pKey && ($.inArray(pAction, ["subscribe", "unsubscribe"]))) {
         $.ajax(this.URL + pAction + "/" + key + "/" + pId + "/" + pSecret, {
           type: "POST",
           success: function() {
