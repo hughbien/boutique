@@ -316,23 +316,23 @@ module Boutique
 
     post '/subscribe/:list_key' do
       list = get_list(params[:list_key])
-      subscriber = Subscriber.create(
+      subscriber = Subscriber.first_or_create(
         list_key: list.key,
         email: params[:email])
-      Emailer.new(list).deliver_zero(subscriber)
+      Emailer.new(list).deliver_zero(subscriber) rescue nil
       ''
     end
 
     post '/confirm/:list_key/:id/:secret' do
       list = get_list(params[:list_key])
-      subscriber = Subscriber.first(id: params[:id], list_key: list.key)
+      subscriber = get_subscriber(params[:id], list, params[:secret])
       subscriber.confirm!(params[:secret])
       ''
     end
 
     post '/unsubscribe/:list_key/:id/:secret' do
       list = get_list(params[:list_key])
-      subscriber = Subscriber.first(id: params[:id], list_key: list.key)
+      subscriber = get_subscriber(params[:id], list, params[:secret])
       subscriber.unconfirm!(params[:secret])
       ''
     end
@@ -340,6 +340,13 @@ module Boutique
     private
     def get_list(list_key)
       List[list_key] || halt(404)
+    end
+
+    def get_subscriber(id, list, secret)
+      Subscriber.first(
+        id: params[:id],
+        list_key: list.key,
+        secret: secret) || halt(404)
     end
   end
 end

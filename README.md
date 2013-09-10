@@ -60,9 +60,6 @@ To start the server for local development:
 TODO
 ====
 
-* add re-usable UI for email subscription, confirmation, unsubscribe
-* add ability to customize CSS of UI
-* handle re-subscribers
 * switch to Stripe
 * add customizable? email integration for purchase receipts + recover
 * add re-usable UI for purchasing, downloading, recover

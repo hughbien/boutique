@@ -8,6 +8,26 @@ var Boutique = {
   },
   list: function(key, configs) {
     this.lists[key] = configs;
+    var params = this.params("boutique");
+    if (params) {
+      params = params.split("/");
+      var pAction = params[0];
+      var pKey = params[1];
+      var pId = params[2];
+      var pSecret = params[3];
+      if (key == pKey && (pAction == "confirm" || pAction == "unsubscribe")) {
+        $.ajax(this.URL + pAction + "/" + key + "/" + pId + "/" + pSecret, {
+          type: "POST",
+          success: function() {
+            var modal = Boutique.buildModal(key);
+            var state = {confirm: "confirmed", unsubscribe: "unsubscribed"}[pAction];
+            modal.removeClass("start subscribed confirmed unsubscribed");
+            modal.addClass(state);
+            modal.show();
+          }
+        });
+      }
+    }
   },
   buildModal: function(key) {
     var modal = $("#boutique-list-" + key);
@@ -88,5 +108,8 @@ var Boutique = {
     var container = $("<p></p>");
     container.append(button);
     return container;
+  },
+  params: function(name) {
+    return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [,""])[1].replace(/\+/g, '%20')) || null;
   }
 };
