@@ -9,36 +9,12 @@ ENV['BOUTIQUE_CMD'] = '1'
 
 module Boutique
   class Command
-    def self.delete(id)
-      purchase = expire(id)
-      purchase.destroy if !purchase.nil?
-    end
-
-    def self.expire(id)
+    def self.drip
       load_config
-      purchase = Boutique::Purchase.get(id.to_i)
-      if purchase.nil?
-        puts "Purchase #{id} not found"
-        return
+      Boutique::List.to_a.each do |list_key|
+        emailer = Boutique::Emailer.new(List[list_key])
+        emailer.drip
       end
-      purchase.downloads.each do |download|
-        FileUtils.rm_rf(File.dirname(
-          "#{Boutique.config.download_dir}#{download.sub(Boutique.config.download_path, '')}"))
-      end
-      purchase
-    end
-
-    def self.expire_old
-      load_config
-      threshold = (Date.today - 1).strftime("%Y%m%d")
-      dirs = Dir.glob("#{Boutique.config.download_dir}/*").
-        map {|f| File.basename(f) }.
-        select {|f| f < threshold }
-      dirs.each {|d| FileUtils.rm_rf("#{Boutique.config.download_dir}/#{d}") }
-
-      Boutique::Purchase.all(
-        :transaction_id => nil,
-        :created_at.lt => (Date.today - 1)).destroy
     end
 
     def self.migrate
@@ -47,35 +23,6 @@ module Boutique
     rescue DataObjects::SyntaxError => e
       DataMapper.auto_upgrade!
       load_config
-    end
-
-    def self.stats(code)
-      load_config
-      product = Boutique::Product.first(:code => code)
-      if product.nil?
-        puts "Product #{code} not found"
-        return
-      end
-
-      puts "Code:   #{product.code}"
-      puts "Name:   #{product.name}"
-      puts "Files:  #{product.files.join("\n        ")}"
-      printf("Price:  $%.2f\n" % product.price)
-      puts "Return: #{product.return_url}"
-      puts "Email:  #{product.support_email}"
-
-      puts ('-' * 40)
-
-      purchases = product.purchases
-      puts "* #{purchases.select {|p| p.completed?}.size} purchases have been completed"
-      puts "* #{purchases.reduce(0) {|sum,p| sum + p.counter}} downloads linked"
-
-      puts ('-' * 40)
-
-      puts "id, links, email" if purchases.size > 0
-      purchases.sort_by {|p| p.counter }.reverse.each do |purchase|
-        puts "* #{purchase.id}, #{purchase.counter}, #{purchase.email}" if purchase.completed?
-      end
     end
 
     private
@@ -89,11 +36,8 @@ ARGV.options do |o|
   o.set_summary_indent('  ')
   o.banner =    "Usage: #{File.basename($0)} [OPTION]"
   o.define_head "Admin for boutique"
-  o.on('-d', '--delete [id]', 'delete purchase') { |id| Boutique::Command.delete(id); exit }
-  o.on('-e', '--expire [id]', 'expire purchase') { |id| Boutique::Command.expire(id); exit }
-  o.on('-E', '--expire-old', 'expire old data') { Boutique::Command.expire_old; exit }
+  o.on('-d', '--drip', 'drip out emails') { Boutique::Command.drip; exit }
   o.on('-m', '--migrate', 'initial migration') { Boutique::Command.migrate; exit }
-  o.on('-s', '--stats [product]', String, 'show stats on product') { |p| Boutique::Command.stats(p); exit }
   o.on('-h', '--help', 'show this help message') { puts o; exit }
   o.parse!
   puts o
