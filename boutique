@@ -29,6 +29,15 @@ module Boutique
       end
     end
 
+    def self.render(file)
+      emailer = Boutique::Emailer.new(nil, File.dirname(file))
+      puts emailer.render(
+        File.basename(file),
+        subscribe_url: 'http://example.com/?boutique=subscribe/example',
+        confirm_url: 'http://example.com/?boutique=confirm/example/0/0',
+        unsubscribe_url: 'http://example.com/?boutique=unsubscribe/example/0/0')
+    end
+
     def self.migrate
       load_config
       DataMapper.auto_upgrade!
@@ -51,6 +60,7 @@ ARGV.options do |o|
   o.on('-a', '--assets', 'create css/js assets') { Boutique::Command.assets; exit }
   o.on('-d', '--drip', 'drip out emails') { Boutique::Command.drip; exit }
   o.on('-m', '--migrate', 'initial migration') { Boutique::Command.migrate; exit }
+  o.on('-r', '--render file', 'render an email') { |f| Boutique::Command.render(f); exit }
   o.on('-h', '--help', 'show this help message') { puts o; exit }
   o.parse!
   puts o

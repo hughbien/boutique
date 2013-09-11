@@ -123,10 +123,10 @@ To start the server for local development:
 TODO
 ====
 
-* fix "cannot load bundler/setup" shouldn't be required in production
+* provide local hooks to test out UIs locally (ie. id=0,secret=0)
+* handle missing front-matter YAML on emails
+* handle blocks for calls to `render`
 * add UI for error handling and invalid emails
-* add boutique command to render emails for testing locally
-* local stub ajax calls + provide hooks to test out UIs locally
 * switch to Stripe
 * add customizable? email integration for purchase receipts + recover
 * add re-usable UI for purchasing, downloading, recover

@@ -87,12 +87,15 @@ module Boutique
   end
 
   class Emailer
-    def initialize(list)
+    def initialize(list, directory = nil)
       @list = list
+      @directory = directory
     end
 
     def render(path, locals = {}, preamble = false)
-      path = full_path(path)
+      path = @directory ?
+        File.join(@directory, path) :
+        full_path(path)
       raise "File not found: #{path}" if !File.exist?(path)
 
       yaml, body = Preamble.load(path)
