@@ -123,8 +123,6 @@ To start the server for local development:
 TODO
 ====
 
-* provide local hooks to test out UIs locally (ie. id=0,secret=0)
-* handle blocks for calls to `render`
 * add UI for error handling and invalid emails
 * switch to Stripe
 * add customizable? email integration for purchase receipts + recover

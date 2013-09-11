@@ -9,6 +9,13 @@ var Boutique = {
     }
     return modal;
   },
+  showModal: function(key, action) {
+    var modal = Boutique.buildModal(key);
+    var state = {confirm: "confirmed", unsubscribe: "unsubscribed"}[action];
+    modal.removeClass("start subscribed confirmed unsubscribed");
+    modal.addClass(state);
+    modal.show();
+  },
   list: function(key, configs) {
     this.lists[key] = configs;
     var params = this.params("boutique");
@@ -21,16 +28,16 @@ var Boutique = {
       if (key == pKey && pAction == "subscribe") {
         Boutique.subscribe(key);
       } else if (key == pKey && ($.inArray(pAction, ["subscribe", "unsubscribe"]))) {
-        $.ajax(this.URL + pAction + "/" + key + "/" + pId + "/" + pSecret, {
-          type: "POST",
-          success: function() {
-            var modal = Boutique.buildModal(key);
-            var state = {confirm: "confirmed", unsubscribe: "unsubscribed"}[pAction];
-            modal.removeClass("start subscribed confirmed unsubscribed");
-            modal.addClass(state);
-            modal.show();
-          }
-        });
+        if (document.domain == "localhost" && pId == "0") {
+          Boutique.showModal(key, pAction);
+        } else {
+          $.ajax(this.URL + pAction + "/" + key + "/" + pId + "/" + pSecret, {
+            type: "POST",
+            success: function() {
+              Boutique.showModal(key, pAction);
+            }
+          });
+        }
       }
     }
   },
