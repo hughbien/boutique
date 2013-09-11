@@ -98,7 +98,7 @@ module Boutique
         full_path(path)
       raise "File not found: #{path}" if !File.exist?(path)
 
-      yaml, body = Preamble.load(path)
+      yaml, body = preamble(path)
       templates_for(path).each do |template|
         blk = proc { body }
         body = template.new(path, &blk).render(self, locals)
@@ -135,7 +135,7 @@ module Boutique
     end
 
     def blast(path, locals = {})
-      yaml, body = Preamble.load(full_path(path))
+      yaml, body = preamble(full_path(path))
       email_key = yaml['key']
       @list.subscribers.all(confirmed: true).each do |subscriber|
         # TODO: speed up by moving filter outside of loop
@@ -177,14 +177,20 @@ module Boutique
         emails = {}
         Dir.entries(@list.emails).each do |filename|
           next if File.directory?(filename)
-          # TODO: stop duplicating calls to Preamble, store in memory
-          yaml, body = Preamble.load(full_path(filename))
+          # TODO: stop duplicating calls to preamble, store in memory
+          yaml, body = preamble(full_path(filename))
           if yaml && yaml['day'] && yaml['key']
             emails[yaml['day']] = filename
           end
         end
         emails
       end
+    end
+
+    def preamble(path)
+      Preamble.load(path)
+    rescue
+      [{}, File.read(path)]
     end
   end
 

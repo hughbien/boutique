@@ -124,7 +124,6 @@ TODO
 ====
 
 * provide local hooks to test out UIs locally (ie. id=0,secret=0)
-* handle missing front-matter YAML on emails
 * handle blocks for calls to `render`
 * add UI for error handling and invalid emails
 * switch to Stripe
