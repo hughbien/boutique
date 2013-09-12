@@ -98,6 +98,7 @@ var Boutique = {
       if (document.domain == "localhost" &&
           form.find("input[name=email]").val() == "example@example.com") {
         form.parents(".boutique").removeClass("start").addClass("subscribed");
+        return;
       }
       $.ajax(form.attr("action"), {
         type: "POST",
