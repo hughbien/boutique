@@ -95,6 +95,10 @@ var Boutique = {
       form.find("input[type=submit]").
         attr("disabled", true).
         val("Loading...");
+      if (document.domain == "localhost" &&
+          form.find("input[name=email]").val() == "example@example.com") {
+        form.parents(".boutique").removeClass("start").addClass("subscribed");
+      }
       $.ajax(form.attr("action"), {
         type: "POST",
         data: form.serialize(),

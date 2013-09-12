@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'redcarpet'
  
   s.files         = Dir.glob('*.{md,rb,ru}') +
-                    %w(boutique) +
+                    %w(boutique public/boutique/script.js public/boutique/styles.css) +
                     Dir.glob('{lib,test}/*.rb')
   s.require_paths = ['lib']
   s.bindir        = '.'
