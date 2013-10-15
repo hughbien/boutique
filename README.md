@@ -123,6 +123,8 @@ To start the server for local development:
 TODO
 ====
 
+* don't use position fixed for modal overlay (mobile support)
+* add CRUD admin for email addresses (?)
 * add UI for error handling and invalid emails
 * switch to Stripe
 * add customizable? email integration for purchase receipts + recover

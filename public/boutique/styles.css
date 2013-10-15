@@ -11,24 +11,25 @@
 .boutique.unsubscribed .unsubscribed {
   display: block;
 }
-.boutique-overlay {
+.boutique {
   position: fixed;
   width: 100%;
   height: 100%;
   left: 0;
   top: 0;
   background: rgba(0,0,0,0.5);
+  text-align: center;
+  overflow-y: auto;
 }
 .boutique-modal {
   background: #f9f9f9;
   font-size: 15px;
-  width: 25em;
-  position: fixed;
+  max-width: 25em;
+  position: relative;
   border-radius: 2px;
-  top: 6em;
-  left: 50%;
-  margin-left: -12.5em;
-  box-shadow: #333 0 2px 5px;
+  margin: 6em auto;
+  text-align: left;
+  box-shadow: #333 0 0 2px;
 }
 .boutique-close {
   font-family: helvetica, sans-serif;
@@ -47,17 +48,12 @@
 }
 .boutique-head {
   background: #111;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #131313), color-stop(100%, #111));
-  background-image: -webkit-linear-gradient(#131313, #111);
-  background-image: -moz-linear-gradient(#131313, #111);
-  background-image: -o-linear-gradient(#131313, #111);
-  background-image: linear-gradient(#131313, #111);
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
   text-align: center;
   color: #fff;
   text-shadow: #111 1px 1px 1px; 
-  padding: 1em 0.1em 1.1em;
+  padding: 1em 0.5em 1.1em;
   font-size: 1.5em;
   line-height: 1.3em;
 }
@@ -91,12 +87,6 @@
 .boutique-body form input[type=submit],
 .boutique-body a.boutique-button {
   background: #ed3b19;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ee6949), color-stop(100%, #ed3b19));
-  background-image: -webkit-linear-gradient(#ee6949, #ed3b19);
-  background-image: -moz-linear-gradient(#ee6949, #ed3b19);
-  background-image: -o-linear-gradient(#ee6949, #ed3b19);
-  background-image: linear-gradient(#ee6949, #ed3b19);
-  box-shadow: #666 0 1px 1px;
   border: 1px solid #ed3b19;
   border-radius: 4px;
   display: inline-block;
@@ -115,18 +105,17 @@
 .boutique-body form input[type=submit]:hover,
 .boutique-body a.boutique-button:hover {
   background: #fe5b3b;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ff9c7c), color-stop(100%, #fe5b3b));
-  background-image: -webkit-linear-gradient(#ff9c7c, #fe5b3b);
-  background-image: -moz-linear-gradient(#ff9c7c, #fe5b3b);
-  background-image: -o-linear-gradient(#ff9c7c, #fe5b3b);
-  background-image: linear-gradient(#ff9c7c, #fe5b3b);
 }
 .boutique-body form input[type=submit][disabled],
 .boutique-body form input[type=submit][disabled]:hover,
 .boutique-body a.boutique-button[disabled],
 .boutique-body a.boutique-button[disabled]:hover {
-  box-shadow: none;
   border: 1px solid #777;
   background: #777;
   cursor: default;
+}
+@media screen and (max-width: 400px) {
+  .boutique-modal {
+    margin: 6em 1em;
+  }
 }

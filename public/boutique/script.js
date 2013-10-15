@@ -4,6 +4,7 @@ var Boutique = {
   subscribe: function(key) {
     var modal = this.buildModal(key);
     modal.show();
+    $("body").css("overflow-y", "hidden");
     if (modal.hasClass("unsubscribed")) {
       modal.removeClass("unsubscribed").addClass("start");
     }
@@ -15,6 +16,11 @@ var Boutique = {
     modal.removeClass("start subscribed confirmed unsubscribed");
     modal.addClass(state);
     modal.show();
+    $("body").css("overflow-y", "hidden");
+  },
+  hideModal: function() {
+    $(".boutique").hide();
+    $("body").css("overflow-y", "auto");
   },
   list: function(key, configs) {
     this.lists[key] = configs;
@@ -47,16 +53,20 @@ var Boutique = {
 
     var html = "";
     html += '<div class="boutique start">';
-    html += '  <div class="boutique-overlay"></div>';
     html += '  <div class="boutique-modal">';
     html += '    <div class="boutique-close">x</div>';
     html += '  </div>';
     html += '</div>';
 
     modal = $(html);
-    modal.find(".boutique-overlay,.boutique-close").click(function(e) {
+    modal.click(function(e) {
+      if (e.target != this) { return; }
       e.preventDefault();
-      $(this).parents(".boutique").hide();
+      Boutique.hideModal();
+    });
+    modal.find(".boutique-close").click(function(e) {
+      e.preventDefault();
+      Boutique.hideModal();
     });
     modal.attr("id", "boutique-list-" + key);
 
