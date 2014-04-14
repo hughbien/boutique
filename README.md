@@ -123,6 +123,10 @@ To start the server for local development:
 TODO
 ====
 
+* remember me feature (for remembering whether this visitor already subscribed or not)
+* add "first name" to form, maybe optional, and expose it to email templates
+* be able to send email on specific day of week
+* option embedded forms instead of modal
 * don't use position fixed for modal overlay (mobile support)
 * add CRUD admin for email addresses (?)
 * add UI for error handling and invalid emails

@@ -54,7 +54,7 @@ var Boutique = {
     var html = "";
     html += '<div class="boutique start">';
     html += '  <div class="boutique-modal">';
-    html += '    <div class="boutique-close">x</div>';
+    html += '    <div class="boutique-close">&times;</div>';
     html += '  </div>';
     html += '</div>';
 
