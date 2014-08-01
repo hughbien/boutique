@@ -1,13 +1,20 @@
-require File.expand_path('../lib/boutique', File.dirname(__FILE__))
-require 'dm-migrations'
 require 'minitest/autorun'
 require 'rack'
 require 'rack/test'
 require 'rack/server'
 require 'fileutils'
+require 'sequel'
+require_relative '../lib/boutique'
 
-DataMapper.setup(:default, 'sqlite::memory:')
-DataMapper.auto_migrate!
+Boutique.configure do |c|
+  c.dev_email      'dev@localhost'
+  c.stripe_api_key 'sk_test_abcdefghijklmnopqrstuvwxyz'
+  c.download_path  '/download'
+  c.download_dir   File.expand_path('../temp', File.dirname(__FILE__))
+  c.db_options     'sqlite::memory:'
+  c.email_options  via: :sendmail
+end
+Boutique::Migrate.run
 
 module Pony
   def self.mail(fields)
@@ -21,23 +28,11 @@ end
 
 class BoutiqueTest < Minitest::Unit::TestCase
   def setup
-    Boutique::Purchase.all.destroy
-    Boutique::Subscriber.all.destroy
-    Boutique::Email.all.destroy
+    # Boutique::Purchase.all.delete
+    Boutique::Email.select_all.delete
+    Boutique::Subscriber.select_all.delete
     Boutique::List.reset_db
     Boutique::Product.reset_db
-    Boutique.configure(false) do |c|
-      c.dev_email      'dev@localhost'
-      c.stripe_api_key 'sk_test_abcdefghijklmnopqrstuvwxyz'
-      c.download_path  '/download'
-      c.download_dir   File.expand_path('../temp', File.dirname(__FILE__))
-      c.db_options(adapter: 'sqlite3',
-        host: 'localhost',
-        username: 'root',
-        password: 'secret',
-        database: 'db.sqlite3')
-      c.email_options(via: :sendmail)
-    end
     Pony.mail(nil)
   end
 
@@ -55,13 +50,13 @@ class BoutiqueTest < Minitest::Unit::TestCase
     Boutique::List['learn-icon']
   end
 
-  def ebook_product
-    Boutique::Product.new(
-      :code => 'ebook',
-      :name => 'Ebook',
-      :files => [File.expand_path('../README.md', File.dirname(__FILE__))],
-      :price => 10.5,
-      :return_url => 'http://zincmade.com',
-      :support_email => 'support@zincmade.com')
-  end
+  #def ebook_product
+  #  Boutique::Product.new(
+  #    :code => 'ebook',
+  #    :name => 'Ebook',
+  #    :files => [File.expand_path('../README.md', File.dirname(__FILE__))],
+  #    :price => 10.5,
+  #    :return_url => 'http://zincmade.com',
+  #    :support_email => 'support@zincmade.com')
+  #end
 end

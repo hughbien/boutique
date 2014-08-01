@@ -45,7 +45,7 @@ class EmailerTest < BoutiqueTest
     subscriber.save
     assert_equal(0, subscriber.drip_day)
     @emailer.drip
-    subscriber = Boutique::Subscriber.get(subscriber.id)
+    subscriber = Boutique::Subscriber[subscriber.id]
     assert_equal(1, subscriber.drip_day)
     refute_nil(Pony.last_mail)
     assert_equal(1, Boutique::Email.count)
@@ -53,7 +53,7 @@ class EmailerTest < BoutiqueTest
 
     Pony.mail(nil)
     @emailer.drip
-    subscriber = Boutique::Subscriber.get(subscriber.id)
+    subscriber = Boutique::Subscriber[subscriber.id]
     assert_equal(1, subscriber.drip_day)
     assert_nil(Pony.last_mail)
     assert_equal(1, Boutique::Email.count)
@@ -61,7 +61,9 @@ class EmailerTest < BoutiqueTest
 
   private
   def create_subscriber
-    Boutique::Subscriber.create(
-      list_key: @list.key, email: 'john@mailinator.com', confirmed: true)
+    subscriber = Boutique::Subscriber.new(list_key: @list.key, email: 'john@mailinator.com')
+    subscriber.confirmed = true
+    subscriber.save
+    subscriber
   end
 end

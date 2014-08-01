@@ -30,7 +30,7 @@ module Boutique
         ymd = Date.today.strftime("%Y-%m-%d")
         Email.create(email_key: "#{yaml['key']}-#{ymd}", subscriber: subscriber)
       else
-        raise "Unconfirmed #{subscriber.email} for #{yaml['key']}" if !subscriber.confirmed?
+        raise "Unconfirmed #{subscriber.email} for #{yaml['key']}" if !subscriber.confirmed
         Email.create(email_key: yaml['key'], subscriber: subscriber)
       end
       Pony.mail(
@@ -50,7 +50,7 @@ module Boutique
     def blast(path, locals = {})
       yaml, body = preamble(full_path(path))
       email_key = yaml['key']
-      @list.subscribers.all(confirmed: true).each do |subscriber|
+      @list.subscribers.where(confirmed: true).each do |subscriber|
         # TODO: speed up by moving filter outside of loop
         if Email.first(email_key: yaml['key'], subscriber: subscriber).nil?
           self.deliver(subscriber, path, locals)
@@ -61,10 +61,9 @@ module Boutique
     def drip
       today = Date.today
       max_day = emails.keys.max || 0
-      subscribers = @list.subscribers.all(
-        :confirmed => true,
-        :drip_on.lt => today,
-        :drip_day.lt => max_day)
+      subscribers = @list.subscribers.
+        where(confirmed: true).
+        where { (drip_on < today) & (drip_day < max_day) }
       subscribers.each do |subscriber|
         subscriber.drip_on = today
         subscriber.drip_day += 1

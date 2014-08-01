@@ -118,12 +118,13 @@ To start the server for local development:
 
 # TODO
 
-* switch to Sequel
 * expose JavaScript API for clients to make custom form
 * update CSS to vertically center align modal
 * add UI for error handling, invalid emails (make sure it doesn't 500)
 * make it CSRF-able w/ custom URL (inject <script> instead of AJAX posts)
 * add better logging + rusen
+* add migrations directory and use Sequel IntegerMigrator
+* add db foreign key constraints where possible
 * add Stripe integration
 * add template-able email integration for purchase receipts + recover
 * add re-usable UI for purchasing, downloading, recover

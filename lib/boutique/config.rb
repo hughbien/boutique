@@ -1,9 +1,12 @@
 module Boutique
   class << self
-    def configure(setup_db=true)
+    attr_accessor :database
+
+    def configure
       yield config
-      DataMapper.setup(:default, config.db_options) if setup_db
       Pony.options = config.email_options if !config.email_options.nil?
+      Boutique.database = Sequel.connect(config.db_options)
+      require_relative 'model'
     end
 
     def config
@@ -84,7 +87,7 @@ module Boutique
     attr_resource :from, :emails, :url
 
     def subscribers
-      Subscriber.all(list_key: self.key)
+      Subscriber.where(list_key: self.key)
     end
 
     def subscribe_url
@@ -95,5 +98,4 @@ module Boutique
       url.to_s
     end
   end
-
 end

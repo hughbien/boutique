@@ -1,4 +1,4 @@
-require File.expand_path('helper', File.dirname(__FILE__))
+require_relative 'helper'
 
 class ModelTest < BoutiqueTest
   def test_product
@@ -32,7 +32,7 @@ class ModelTest < BoutiqueTest
       list_key: 'learn-icon',
       email: 'john@mailinator.com')
     subscriber.save
-    refute(subscriber.confirmed?)
+    refute(subscriber.confirmed)
     refute_nil(subscriber.secret)
     assert_equal(1, list.subscribers.count)
     assert_equal(subscriber, list.subscribers.first)
@@ -49,7 +49,7 @@ class ModelTest < BoutiqueTest
   end
 
   def test_subscriber_email_validation
-    list =  new_list
+    list = new_list
     subscriber = Boutique::Subscriber.new(
       list_key: 'learn-icon',
       email: 'invalid-email')

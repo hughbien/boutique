@@ -1,40 +1,56 @@
 module Boutique
-  class Purchase
-    include DataMapper::Resource
+  class Migrate
+    def self.run
+      Sequel.extension :migration
+      migration = Sequel.migration do
+        change do
+          create_table(:subscribers) do
+            primary_key :id
+            column :list_key, String, null: false
+            column :email, String, null: false
+            column :secret, String, null: false
+            column :confirmed, TrueClass, default: false
+            column :created_at, DateTime, null: false
+            column :drip_on, Date, null: false
+            column :drip_day, Integer, null: false, default: 0
+          end
 
-    property :id, Serial
-    property :product_key, String, required: true
-    property :created_at, DateTime
-    property :counter, Integer, required: true
-    property :secret, String, required: true
-    property :transaction_id, String
-    property :email, String
-    property :name, String, format: :email_address
-    property :completed_at, DateTime
-    property :downloads, CommaSeparatedList
+          create_table(:emails) do
+            primary_key :id
+            foreign_key :subscriber_id, :subscribers
+            column :email_key, String, required: true
+            column :created_at, DateTime
+          end
+        end
+      end
+      migration.apply(Boutique.database, :up)
+      # re-parse the schema after table changes
+      Subscriber.dataset = Subscriber.dataset
+      Email.dataset = Email.dataset
+    end
   end
 
-  class Subscriber
-    include DataMapper::Resource
-
-    property :id, Serial
-    property :list_key, String, required: true, unique_index: :list_key_email
-    property :email, String, required: true, unique_index: :list_key_email, format: :email_address
-    property :secret, String, required: true
-    property :confirmed, Boolean
-    property :created_at, DateTime
-    property :drip_on, Date, required: true
-    property :drip_day, Integer, required: true, default: 0
-
-    validates_within :list_key, set: List
-    validates_uniqueness_of :email, scope: :list_key
-
-    has n, :emails
+  class Subscriber < Sequel::Model
+    one_to_many :emails
+    set_allowed_columns :list_key, :email
 
     def initialize(*args)
       super
       self.secret ||= Digest::SHA1.hexdigest("#{rand(1000)}-#{Time.now}")[0..6]
       self.drip_on ||= Date.today
+      self.created_at ||= DateTime.now
+    end
+
+    def validate
+      super
+      errors.add(:list_key, 'is invalid') if !List.include?(list_key)
+      errors.add(:email, 'is invalid') if email !~ /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i
+
+      count = self.class.
+        where(list_key: list_key, email: email).
+        exclude(id: id).
+        count
+      errors.add(:email, 'has already subscribed') if count > 0
     end
 
     def list
@@ -69,19 +85,23 @@ module Boutique
     end
   end
 
-  class Email
-    include DataMapper::Resource
+  class Email < Sequel::Model
+    many_to_one :subscriber
 
-    property :id, Serial
-    property :email_key, String, required: true
-    property :created_at, DateTime
+    def initialize(*args)
+      super
+      self.created_at ||= DateTime.now
+    end
 
-    validates_uniqueness_of :email_key, scope: :subscriber
-    validates_presence_of :subscriber
+    def validate
+      super
+      errors.add(:subscriber_id, "can't be blank") if subscriber_id.nil?
 
-    belongs_to :subscriber
+      count = self.class.
+        where(subscriber_id: subscriber_id, email_key: email_key).
+        exclude(id: id).
+        count
+      errors.add(:email_key, 'has already been sent') if count > 0
+    end
   end
-
-  DataMapper::Model.raise_on_save_failure = true
-  DataMapper.finalize
 end

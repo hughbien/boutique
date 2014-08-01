@@ -1,12 +1,13 @@
+require 'sqlite3'
 require File.expand_path('lib/boutique', File.dirname(__FILE__))
 
-Boutique.configure(ENV['BOUTIQUE_DEV'] || !ENV['BOUTIQUE_CMD'].nil?) do |c|
+Boutique.configure do |c|
   #c.dev_email      'dev@localhost'
   c.stripe_api_key 'sk_test_abcdefghijklmnopqrstuvwxyz'
   c.download_path  '/download'
   c.download_dir   File.expand_path('temp', File.dirname(__FILE__))
   c.db_options(
-    adapter: 'sqlite3',
+    adapter: 'sqlite',
     host: 'localhost',
     username: 'root',
     password: 'secret',

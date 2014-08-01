@@ -11,29 +11,29 @@ class AppTest < BoutiqueTest
     assert_equal(1, Boutique::Email.count)
     refute_nil(Pony.last_mail)
     subscriber = Boutique::Subscriber.first
-    refute(subscriber.confirmed?)
+    refute(subscriber.confirmed)
   end
 
   def test_confirm
     list = new_list
-    subscriber = Boutique::Subscriber.create(
-      list_key: list.key, email: 'john@mailinator.com')
-    refute(subscriber.confirmed?)
+    subscriber = Boutique::Subscriber.create(list_key: list.key, email: 'john@mailinator.com')
+    refute(subscriber.confirmed)
     post "/confirm/#{list.key}/#{subscriber.id}/#{subscriber.secret}"
     assert(last_response.ok?)
-    subscriber = Boutique::Subscriber.get(subscriber.id)
-    assert(subscriber.confirmed?)
+    subscriber = Boutique::Subscriber[subscriber.id]
+    assert(subscriber.confirmed)
   end
 
   def test_unsubscribe
     list = new_list
-    subscriber = Boutique::Subscriber.create(
-      list_key: list.key, email: 'john@mailinator.com', confirmed: true)
-    assert(subscriber.confirmed?)
+    subscriber = Boutique::Subscriber.new(list_key: list.key, email: 'john@mailinator.com')
+    subscriber.confirmed = true
+    subscriber.save
+    assert(subscriber.confirmed)
     post "/unsubscribe/#{list.key}/#{subscriber.id}/#{subscriber.secret}"
     assert(last_response.ok?)
-    subscriber = Boutique::Subscriber.get(subscriber.id)
-    refute(subscriber.confirmed?)
+    subscriber = Boutique::Subscriber[subscriber.id]
+    refute(subscriber.confirmed)
   end
 
   private

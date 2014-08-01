@@ -1,9 +1,8 @@
 #!/usr/bin/env ruby
-require 'optparse'
-require File.expand_path('lib/boutique', File.dirname(__FILE__))
-require 'dm-migrations'
 require 'date'
 require 'fileutils'
+require 'optparse'
+require_relative '../lib/boutique'
 
 ENV['BOUTIQUE_CMD'] = '1'
 
@@ -40,10 +39,7 @@ module Boutique
 
     def self.migrate
       load_config
-      DataMapper.auto_upgrade!
-    rescue DataObjects::SyntaxError => e
-      DataMapper.auto_upgrade!
-      load_config
+      Boutique::Migrate.run
     end
 
     private

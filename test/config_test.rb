@@ -11,7 +11,7 @@ class ConfigTest < BoutiqueTest
       File.expand_path('../temp', File.dirname(__FILE__)),
       Boutique.config.download_dir)
     assert_equal({
-      adapter: 'sqlite3',
+      adapter: 'sqlite',
       host: 'localhost',
       username: 'root',
       password: 'secret',
