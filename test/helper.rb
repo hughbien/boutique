@@ -19,7 +19,7 @@ module Pony
   end
 end
 
-class BoutiqueTest < MiniTest::Test
+class BoutiqueTest < Minitest::Unit::TestCase
   def setup
     Boutique::Purchase.all.destroy
     Boutique::Subscriber.all.destroy

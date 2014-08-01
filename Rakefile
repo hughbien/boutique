@@ -1,26 +1,31 @@
-require File.expand_path('lib/boutique', File.dirname(__FILE__))
 require 'rake/testtask'
 require 'dm-migrations'
 
-task :default => :test
+task default: :test
 
 Rake::TestTask.new do |t|
   t.pattern = 'test/*_test.rb'
 end
 
+desc 'Build boutique gem'
 task :build do
   `gem build boutique.gemspec`
 end
 
+desc 'Remove build artifacts'
 task :clean do
   rm Dir.glob('*.gem')
 end
 
-task :push => :build do
+desc 'Push gem to rubygems.org'
+task push: :build do
+  require_relative 'lib/boutique/version'
   `gem push boutique-#{Boutique::VERSION}.gem`
 end
 
+desc 'Load testing data to local database'
 task :fixtures do
+  require_relative 'lib/boutique'
   ENV['BOUTIQUE_CMD'] = '1'
   config = File.expand_path('config.ru', File.dirname(__FILE__))
   load(config) rescue DataObjects::SyntaxError

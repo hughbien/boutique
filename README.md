@@ -1,11 +1,9 @@
-Description
-===========
+# Description
 
 Boutique is a Sinatra app for drip emails (and soon-to-be product checkouts).
 Still in development!
 
-Installation
-============
+# Installation
 
     $ gem install boutique
 
@@ -47,8 +45,7 @@ credentials) and stick the `.css` and `.js` files in your project.  Note that
        new -- boutique.css
     $ mv boutique.js boutique.css /path/to/project/assets/.
 
-Drip Emails
-===========
+# Drip Emails
 
 Emails can be written in any templating format that `Tilt` accepts.  Stick them
 in `/path/to/emails-dir` (configured above in `config.ru`).  Emails use
@@ -110,8 +107,7 @@ day by mistake.  Use cron to schedule drips:
     $ crontab -e
     0 8 * * * boutique --drip
 
-Development
-===========
+# Development
 
 Tests are setup to run individually via `ruby test/*_test.rb` or run them all
 via `rake`.
@@ -120,22 +116,19 @@ To start the server for local development:
 
     $ BOUTIQUE_DEV=1 shotgun
 
-TODO
-====
+# TODO
 
-* remember me feature (for remembering whether this visitor already subscribed or not)
-* add "first name" to form, maybe optional, and expose it to email templates
-* be able to send email on specific day of week
-* option embedded forms instead of modal
-* don't use position fixed for modal overlay (mobile support)
-* add CRUD admin for email addresses (?)
-* add UI for error handling and invalid emails
-* switch to Stripe
-* add customizable? email integration for purchase receipts + recover
+* switch to Sequel
+* expose JavaScript API for clients to make custom form
+* update CSS to vertically center align modal
+* add UI for error handling, invalid emails (make sure it doesn't 500)
+* make it CSRF-able w/ custom URL (inject <script> instead of AJAX posts)
+* add better logging + rusen
+* add Stripe integration
+* add template-able email integration for purchase receipts + recover
 * add re-usable UI for purchasing, downloading, recover
 
-License
-=======
+# License
 
 Copyright Hugh Bien - http://hughbien.com.
 Released under BSD License, see LICENSE.md for more info.
