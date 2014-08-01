@@ -14,6 +14,12 @@ class AppTest < BoutiqueTest
     refute(subscriber.confirmed)
   end
 
+  def test_subscribe_invalid
+    list = new_list
+    post "/subscribe/#{list.key}", email: 'invalid-email'
+    assert_equal(400, last_response.status)
+  end
+
   def test_confirm
     list = new_list
     subscriber = Boutique::Subscriber.create(list_key: list.key, email: 'john@mailinator.com')

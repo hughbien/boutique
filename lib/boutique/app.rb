@@ -13,11 +13,15 @@ module Boutique
 
     post '/subscribe/:list_key' do
       list = get_list(params[:list_key])
-      subscriber = Subscriber.find_or_create(
-        list_key: list.key,
-        email: params[:email])
-      Emailer.new(list).deliver_zero(subscriber) rescue nil
-      ''
+      begin
+        subscriber = Subscriber.find_or_create(
+          list_key: list.key,
+          email: params[:email])
+        Emailer.new(list).deliver_zero(subscriber) rescue nil
+        ''
+      rescue Sequel::ValidationFailed => e
+        halt 400, e.message
+      end
     end
 
     post '/confirm/:list_key/:id/:secret' do

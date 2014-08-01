@@ -120,7 +120,6 @@ To start the server for local development:
 
 * expose JavaScript API for clients to make custom form
 * update CSS to vertically center align modal
-* add UI for error handling, invalid emails (make sure it doesn't 500)
 * make it CSRF-able w/ custom URL (inject <script> instead of AJAX posts)
 * add better logging + rusen
 * add migrations directory and use Sequel IntegerMigrator
