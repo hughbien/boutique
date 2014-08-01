@@ -38,7 +38,8 @@ var Boutique = {
           Boutique.showModal(key, pAction);
         } else {
           $.ajax(this.URL + pAction + "/" + key + "/" + pId + "/" + pSecret, {
-            type: "POST",
+            dataType: "jsonp",
+            jsonp: "jsonp",
             success: function() {
               Boutique.showModal(key, pAction);
             }
@@ -111,8 +112,9 @@ var Boutique = {
         return;
       }
       $.ajax(form.attr("action"), {
-        type: "POST",
         data: form.serialize(),
+        dataType: "jsonp",
+        jsonp: "jsonp",
         error: function() {
           form.find("input[type=submit]").
             attr("disabled", false).

@@ -119,7 +119,6 @@ To start the server for local development:
 # TODO
 
 * expose JavaScript API for clients to make custom form
-* make it CSRF-able w/ custom URL (inject <script> instead of AJAX posts)
 * add better logging + rusen
 * add migrations directory and use Sequel IntegerMigrator
 * add db foreign key constraints where possible

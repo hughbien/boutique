@@ -5,8 +5,9 @@ class AppTest < BoutiqueTest
 
   def test_subscribe
     list = new_list
-    post "/subscribe/#{list.key}", email: 'john@mailinator.com'
+    get "/subscribe/#{list.key}", email: 'john@mailinator.com', jsonp: 'callback'
     assert(last_response.ok?)
+    assert_equal('"callback()"', last_response.body.inspect)
     assert_equal(1, Boutique::Subscriber.count)
     assert_equal(1, Boutique::Email.count)
     refute_nil(Pony.last_mail)
@@ -16,7 +17,7 @@ class AppTest < BoutiqueTest
 
   def test_subscribe_invalid
     list = new_list
-    post "/subscribe/#{list.key}", email: 'invalid-email'
+    get "/subscribe/#{list.key}", email: 'invalid-email'
     assert_equal(400, last_response.status)
   end
 
@@ -24,7 +25,7 @@ class AppTest < BoutiqueTest
     list = new_list
     subscriber = Boutique::Subscriber.create(list_key: list.key, email: 'john@mailinator.com')
     refute(subscriber.confirmed)
-    post "/confirm/#{list.key}/#{subscriber.id}/#{subscriber.secret}"
+    get "/confirm/#{list.key}/#{subscriber.id}/#{subscriber.secret}"
     assert(last_response.ok?)
     subscriber = Boutique::Subscriber[subscriber.id]
     assert(subscriber.confirmed)
@@ -36,7 +37,7 @@ class AppTest < BoutiqueTest
     subscriber.confirmed = true
     subscriber.save
     assert(subscriber.confirmed)
-    post "/unsubscribe/#{list.key}/#{subscriber.id}/#{subscriber.secret}"
+    get "/unsubscribe/#{list.key}/#{subscriber.id}/#{subscriber.secret}"
     assert(last_response.ok?)
     subscriber = Boutique::Subscriber[subscriber.id]
     refute(subscriber.confirmed)
