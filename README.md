@@ -118,10 +118,8 @@ To start the server for local development:
 
 # TODO
 
-* expose JavaScript API for clients to make custom form
-* add better logging + rusen
+* add rusen instructions
 * add migrations directory and use Sequel IntegerMigrator
-* add db foreign key constraints where possible
 * add Stripe integration
 * add template-able email integration for purchase receipts + recover
 * add re-usable UI for purchasing, downloading, recover
