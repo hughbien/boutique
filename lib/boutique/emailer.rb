@@ -5,7 +5,7 @@ module Boutique
       @directory = directory
     end
 
-    def render(path, locals = {}, preamble = false)
+    def render(path, locals = {}, pre = false)
       path = @directory ?
         File.join(@directory, path) :
         full_path(path)
@@ -17,7 +17,7 @@ module Boutique
         body = template.new(path, &blk).render(self, locals)
       end
 
-      preamble ? [yaml, body] : body
+      pre ? [yaml, body] : body
     end
 
     def deliver(subscriber, path, locals = {})
@@ -101,7 +101,8 @@ module Boutique
     end
 
     def preamble(path)
-      Preamble.load(path)
+      data = Preamble.load(path)
+      [data.metadata, data.content]
     rescue
       [{}, File.read(path)]
     end
