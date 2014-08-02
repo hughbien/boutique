@@ -21,6 +21,20 @@ class AppTest < BoutiqueTest
     assert_equal(400, last_response.status)
   end
 
+  def test_subscribe_error
+    list = new_list
+    find_or_create = lambda { |*args| raise('Stubbed Error') }
+    Boutique::Subscriber.stub(:find_or_create, find_or_create) do
+      assert_raises(RuntimeError) do
+        get "/subscribe/#{list.key}", email: 'john@mailinator.com'
+      end
+    end
+    mail = Pony.last_mail
+    assert_equal('dev@localhost', mail[:to])
+    assert_equal('[Boutique Error] Stubbed Error', mail[:subject])
+    assert(mail[:body])
+  end
+
   def test_confirm
     list = new_list
     subscriber = Boutique::Subscriber.create(list_key: list.key, email: 'john@mailinator.com')

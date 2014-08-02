@@ -7,7 +7,7 @@ require 'sequel'
 require_relative '../lib/boutique'
 
 Boutique.configure do |c|
-  c.dev_email      'dev@localhost'
+  c.error_email    'dev@localhost'
   c.stripe_api_key 'sk_test_abcdefghijklmnopqrstuvwxyz'
   c.download_path  '/download'
   c.download_dir   File.expand_path('../temp', File.dirname(__FILE__))

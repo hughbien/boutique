@@ -69,7 +69,7 @@ module Boutique
 
   class Config
     include MemoryResource
-    attr_resource :dev_email,
+    attr_resource :error_email,
       :stripe_api_key,
       :download_dir,
       :download_path,

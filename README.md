@@ -13,7 +13,7 @@ Setup a `config.ru` file and run it like any other Sinatra app:
     require 'boutique'
 
     Boutique.configure do |c|
-      c.dev_email      'dev@mailinator.com'
+      c.error_email    'dev@mailinator.com'
       c.stripe_api_key 'sk_test_abcdefghijklmnopqrstuvwxyz'
       c.download_dir   '/path/to/download'
       c.download_path  '/download'
@@ -118,7 +118,6 @@ To start the server for local development:
 
 # TODO
 
-* add rusen instructions
 * add migrations directory and use Sequel IntegerMigrator
 * add Stripe integration
 * add template-able email integration for purchase receipts + recover

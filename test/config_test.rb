@@ -2,7 +2,7 @@ require File.expand_path('helper', File.dirname(__FILE__))
 
 class ConfigTest < BoutiqueTest
   def test_db
-    assert_equal('dev@localhost', Boutique.config.dev_email)
+    assert_equal('dev@localhost', Boutique.config.error_email)
     assert_equal(
       'sk_test_abcdefghijklmnopqrstuvwxyz',
       Boutique.config.stripe_api_key)

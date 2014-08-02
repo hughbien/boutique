@@ -4,11 +4,13 @@ module Boutique
     set :show_exceptions, false
 
     error do
+      err = request.env['sinatra.error']
       Pony.mail(
-        :to => Boutique.config.dev_email,
-        :subject => 'Boutique Error',
-        :body => request.env['sinatra.error'].to_s
-      ) if Boutique.config.dev_email
+        :to => Boutique.config.error_email,
+        :subject => "[Boutique Error] #{err.message}",
+        :body => [request.env.to_s, err.message, err.backtrace].compact.flatten.join("\n")
+      ) if Boutique.config.error_email
+      raise err
     end
 
     get '/subscribe/:list_key' do

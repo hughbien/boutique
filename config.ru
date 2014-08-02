@@ -2,7 +2,7 @@ require 'sqlite3'
 require File.expand_path('lib/boutique', File.dirname(__FILE__))
 
 Boutique.configure do |c|
-  #c.dev_email      'dev@localhost'
+  # c.error_email    'dev@localhost'
   c.stripe_api_key 'sk_test_abcdefghijklmnopqrstuvwxyz'
   c.download_path  '/download'
   c.download_dir   File.expand_path('temp', File.dirname(__FILE__))
