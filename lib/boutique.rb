@@ -16,5 +16,3 @@ require_relative 'boutique/app'
 require_relative 'boutique/config'
 require_relative 'boutique/emailer'
 require_relative 'boutique/version'
-
-module Boutique; end

@@ -1,6 +1,11 @@
 require_relative 'helper'
 
 class ModelTest < BoutiqueTest
+  def test_migrate
+    versions = Boutique.database.select(:version).from(:schema_info).all
+    assert_equal([{version: 1}], versions)
+  end
+
   def test_product
     Boutique.product('icon-set') do |p|
       p.from  'support@zincmade.com'

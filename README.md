@@ -118,7 +118,6 @@ To start the server for local development:
 
 # TODO
 
-* add migrations directory and use Sequel IntegerMigrator
 * add Stripe integration
 * add template-able email integration for purchase receipts + recover
 * add re-usable UI for purchasing, downloading, recover

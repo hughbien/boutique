@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
  
   s.files         = Dir.glob('*.{md,rb,ru}') +
                     %w(public/boutique/script.js public/boutique/styles.css) +
-                    Dir.glob('{bin,lib,test}/**/*.rb')
+                    Dir.glob('{bin,lib,migrate,test}/**/*.rb')
   s.require_paths = ['lib']
   s.bindir        = 'bin'
   s.executables   = ['boutique']
