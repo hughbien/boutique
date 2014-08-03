@@ -1,10 +1,10 @@
+require_relative '../lib/boutique'
 require 'minitest/autorun'
 require 'rack'
 require 'rack/test'
 require 'rack/server'
 require 'fileutils'
 require 'sequel'
-require_relative '../lib/boutique'
 
 Boutique.configure do |c|
   c.error_email    'dev@localhost'
@@ -26,7 +26,7 @@ module Pony
   end
 end
 
-class BoutiqueTest < Minitest::Unit::TestCase
+class BoutiqueTest < Minitest::Test
   def setup
     # Boutique::Purchase.all.delete
     Boutique::Email.select_all.delete
