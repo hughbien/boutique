@@ -109,8 +109,9 @@ day by mistake.  Use cron to schedule drips:
 
 # Development
 
-Tests are setup to run individually via `ruby test/*_test.rb` or run them all
-via `rake`.
+Run all tests with `rake`.
+
+Run individual tests with `ruby path/to/test.rb` or `rake TEST=path/to/test.rb`.
 
 To start the server for local development:
 
