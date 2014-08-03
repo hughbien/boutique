@@ -1,5 +1,4 @@
 require 'rake/testtask'
-require 'dm-migrations'
 
 task default: :test
 
