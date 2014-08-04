@@ -129,6 +129,7 @@ To start the server for local development:
 * add Stripe integration
 * add template-able email integration for purchase receipts + recover
 * add re-usable UI for purchasing, downloading, recover
+* upgrade to Tilt 2.0
 
 # License
 
