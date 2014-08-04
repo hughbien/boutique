@@ -107,6 +107,13 @@ day by mistake.  Use cron to schedule drips:
     $ crontab -e
     0 8 * * * boutique --drip
 
+# Rack Extensions
+
+I recommend using these extensions in production:
+
+* [Rack Timeout](https://github.com/heroku/rack-timeout)
+* [Rack Throttle](https://github.com/datagraph/rack-throttle)
+
 # Development
 
 Run all tests with `rake`.
@@ -120,7 +127,6 @@ To start the server for local development:
 # TODO
 
 * switch to SecureRandom
-* add docs for using rack-timeout and rack-throttle
 * add Stripe integration
 * add template-able email integration for purchase receipts + recover
 * add re-usable UI for purchasing, downloading, recover
