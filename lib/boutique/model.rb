@@ -15,7 +15,7 @@ module Boutique
 
     def initialize(*args)
       super
-      self.secret ||= Digest::SHA1.hexdigest("#{rand(1000)}-#{Time.now}")[0..6]
+      self.secret ||= SecureRandom.hex(3)
       self.drip_on ||= Date.today
       self.created_at ||= DateTime.now
     end

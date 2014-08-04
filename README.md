@@ -126,7 +126,6 @@ To start the server for local development:
 
 # TODO
 
-* switch to SecureRandom
 * add Stripe integration
 * add template-able email integration for purchase receipts + recover
 * add re-usable UI for purchasing, downloading, recover
