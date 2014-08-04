@@ -1,3 +1,5 @@
+ENV['RACK_ENV'] = 'test'
+
 require_relative '../lib/boutique'
 require 'minitest/autorun'
 require 'rack'

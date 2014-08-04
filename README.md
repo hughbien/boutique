@@ -18,7 +18,7 @@ Setup a `config.ru` file and run it like any other Sinatra app:
       c.download_dir   '/path/to/download'
       c.download_path  '/download'
 
-      c.db_options(adapter: 'postgresql', host: 'localhost',
+      c.db_options(adapter: 'postgres', host: 'localhost',
         username: 'root', password: 'secret', database: 'boutique')
       c.email_options(via: :smtp, via_options: {host: 'smtp.example.org'})
     end
@@ -39,7 +39,7 @@ Now setup the database tables (assuming you've already created the database and
 credentials) and stick the `.css` and `.js` files in your project.  Note that
 `boutique.js` is dependent on jQuery.
 
-    $ boutique --migrate
+    $ bin/boutique --migrate
     $ boutique --assets
        new -- boutique.js
        new -- boutique.css
@@ -119,6 +119,8 @@ To start the server for local development:
 
 # TODO
 
+* switch to SecureRandom
+* add docs for using rack-timeout and rack-throttle
 * add Stripe integration
 * add template-able email integration for purchase receipts + recover
 * add re-usable UI for purchasing, downloading, recover

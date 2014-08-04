@@ -13,7 +13,7 @@ Boutique.configure do |c|
     password: 'secret',
     database: 'db.sqlite3')
   c.email_options(via: :sendmail)
-end
+end if ENV['RACK_ENV'] != 'test'
 
 Boutique.product('readme') do |p|
   p.from 'support@localhost'

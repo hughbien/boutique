@@ -1,5 +1,6 @@
 module Boutique
   class App < Sinatra::Base
+    set :logging, true
     set :raise_errors, false
     set :show_exceptions, false
 
