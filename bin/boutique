@@ -8,8 +8,8 @@ ENV['BOUTIQUE_CMD'] = '1'
 
 module Boutique
   class Command
-    JS_FILE = File.join(File.dirname(__FILE__), 'public/boutique/script.js')
-    CSS_FILE = File.join(File.dirname(__FILE__), 'public/boutique/styles.css')
+    JS_FILE = File.join(File.dirname(__FILE__), '../public/boutique/script.js')
+    CSS_FILE = File.join(File.dirname(__FILE__), '../public/boutique/styles.css')
 
     def self.assets
       File.exist?('boutique.js') ?
