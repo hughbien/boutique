@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.description = 'A Sinatra app that adds product checkouts and drip emails support' +
                   ' to any websites (both UI + backend).'
  
+  s.required_ruby_version = '~> 2.0'
   s.add_dependency 'sinatra', '~> 1.4'
   s.add_dependency 'sequel', '~> 4.12'
   s.add_dependency 'pony', '~> 1.10'
